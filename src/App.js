@@ -1,10 +1,22 @@
 import './App.css';
-import ContentPage from './temp/ContentPage';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+
+import AdminPage from './pages/AdminPage';
+import Main from './pages/Main';
+import PwQuizPage from './pages/PwQuizPage';
+
+
 
 function App() {
   return (
     <div>
-        <ContentPage/>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Main/>}></Route>
+          <Route path="/admin" element={<AdminPage/>}></Route>
+          <Route path="/admin/pwquiz" element={<PwQuizPage/>}></Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

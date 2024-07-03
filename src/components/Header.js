@@ -1,11 +1,13 @@
 import React from "react";
 
-function ContentInput(){
+function Header(){
+
     return(
         <div>
             
         </div>
     );
+
 }
 
-export default ContentInput;
+export default Header;
