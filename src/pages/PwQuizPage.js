@@ -4,6 +4,8 @@ import Loading from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
 import PwQuizList from "../components/PwQuizList";
 import PwQuizForm from "./PwQuizForm";
+import { Snackbar } from "@mui/material";
+import LoadingPage from "./LoadingPage";
 
 
 //<Route path="/admin/pwquiz" element={<PwQuizPage/>}></Route>
@@ -11,18 +13,18 @@ function PwQuizPage(){
     
     const [dataList,setDataList] = useState([]);
     const [pwQuiz, setPwQuiz] = useState('');
+    const [snackBmsg,setSnackBmsg] = useState('')
 
     const [loading,setLoading] = useState(false);
     const [error,setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSnackB, setIsSnackB] = useState(false);
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
+    const openModal = () => {setIsModalOpen(true);};
+    const closeModal = () => {setIsModalOpen(false);};
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
+    const openSnackB = () => {setIsSnackB(true);};
+    const closeSnackB = () => {setIsSnackB(false);};
 
     useEffect(()=>{
         const fetchData = async () =>{
@@ -40,9 +42,9 @@ function PwQuizPage(){
             setLoading(false);
         }
         fetchData();
-    },[]);
+    },[isModalOpen]);
 
-    if(loading){return <Loading/>}
+    if(loading){return <LoadingPage/>}
     if(error){return <ErrorPage/>}
     if(!dataList){return null;}
 
@@ -50,8 +52,12 @@ function PwQuizPage(){
         <div>
             <PwQuizList dataList={dataList} />
             <button onClick={openModal}>+</button>
-            <PwQuizForm isModalOpen={isModalOpen} closeModal={closeModal} setPwQuiz={setPwQuiz}/>
-            
+            <PwQuizForm isModalOpen={isModalOpen} closeModal={closeModal}
+                openSnackB={openSnackB} setSnackBmsg={setSnackBmsg} setPwQuiz={setPwQuiz}/>
+            <Snackbar open={isSnackB} 
+                autoHideDuration={2000} 
+                onClose={closeSnackB} 
+                message={snackBmsg}/>
         </div>
     );
 }

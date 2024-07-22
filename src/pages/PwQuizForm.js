@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { pwQuizController } from "../contorller/pwQuizController";
+import { Snackbar } from "@mui/material";
 
 // Modal.setAppElement('#root');
 
 function PwQuizForm(props){
 
-    const{isModalOpen,closeModal,setPwQuiz} = props;
+    const {isModalOpen,closeModal,openSnackB,setSnackBmsg} = props;
 
-    const[newPwQuiz,setNewPwQuiz] = useState('');
+    const [newPwQuiz,setNewPwQuiz] = useState('');
 
     const handleInput = (e) => {
         setNewPwQuiz(e.target.value);
@@ -21,7 +22,8 @@ function PwQuizForm(props){
             const response = await pwQuizController('/savePwQuiz','post',{
                 'quiz' : newPwQuiz,
             });
-            alert(response.data);
+            setSnackBmsg(response.data);
+            openSnackB();
             closeModal();
         } catch (error) {
             if(error && error.response.data){
@@ -36,8 +38,7 @@ function PwQuizForm(props){
         <Modal isOpen={isModalOpen}  contentLabel="Content Input Window" ariaHideApp={false}>
             <form onSubmit={saveData}> 
                 <label>Add PwQuiz</label>
-                <textarea value={newPwQuiz} rows="4" cols="30" onChange={handleInput}></textarea>  {/*textarea가 화면크기를 변경해도 화면을 넘어가지 않게 CSS설정*/}
-
+                <textarea value={newPwQuiz} rows="4" cols="30" onChange={handleInput} autoFocus></textarea>  {/*textarea가 화면크기를 변경해도 화면을 넘어가지 않게 CSS설정*/}
             </form>
             <button onClick={saveData}>Add</button>
             <button onClick={closeModal}>Close</button>

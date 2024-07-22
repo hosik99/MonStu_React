@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 function Content(){
 
-    const [tempList,setTempList] = useState('awwwwwwwwwwwffffasfsaawwwwwwwwwwwffffasfsaawwwwwwwwwwwffffasfsaawwwwwwwwwwwffffasfsa');
+    const [tempList,setTempList] = useState([]);
 
     return(
         <div>

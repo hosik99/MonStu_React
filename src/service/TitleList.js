@@ -2,7 +2,7 @@ import React,{useState,useEffect} from "react";
 
 function TitleList(){
     
-    const [tempList,setTempList] = useState(['myPage','HomeStu','airpplan','tom','cat']);
+    const [tempList,setTempList] = useState([]);
 
     //Show Titles 
     const tempListItme = tempList.map((value,index)=> 
