@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import LoadingPage from "../LoadingPage";
 import { loginController } from "../../contorller/loginController";
+import { Link } from "react-router-dom";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
     display: flex;
@@ -58,6 +59,26 @@ const Button = styled.button`
 
     &:hover {
         background-color: #0056b3;
+    }
+`;
+
+const StyledLink = styled(Link)`
+    display: inline-block;
+    padding: 6px 10px;
+    margin-top: 10px;
+    font-weight: bold ;
+    font-size: 14px;
+    color: #007bff; // 링크의 기본 색상
+    background-color: #fff;
+    border: 2px solid #007bff; // 버튼의 테두리 색상
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease; // 천천히 변화
+
+    &:hover {
+        background-color: #007bff;
+        color: #fff;
     }
 `;
 
@@ -129,6 +150,7 @@ function LoginPage(){
                     <Input type="password" name="memberPw" value={formData.memberPw} onChange={handleInputChange} />
                 </FormGroup>
                 <Button type="submit">Login</Button>
+                <StyledLink>sign up</StyledLink>
             </Form>
         </Container>
     );

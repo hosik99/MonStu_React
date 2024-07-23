@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const HeaderStyle = styled.header`
@@ -69,8 +70,8 @@ function Header() {
             <Logo>MONSTU</Logo>
             <Nav>
                 <ul>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Login</a></li>
+                  <li><Link to="/about">About</Link></li>
+                  <li><Link to="/login">Login</Link></li>
                 </ul>
             </Nav>
         </HeaderStyle>

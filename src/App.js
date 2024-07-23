@@ -8,7 +8,9 @@ import SignUpPage from './pages/signUp/SignUpPage';
 import ContentPage from './pages/ContentPage';
 import LoginPage from './pages/login/LoginPage';
 
-
+/*
+  Link 컴포넌트를 사용하면 페이지가 새로 고침되지 않고 클라이언트 측에서 URL이 변경
+*/
 function App() {
   return (
       <BrowserRouter>

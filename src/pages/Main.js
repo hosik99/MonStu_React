@@ -19,9 +19,12 @@ const StyledMain = styled.main`
 const StyledArticle = styled.article`
     background: #fff;
     padding: 20px;
-    flex: 1;    //남은 공간을 채우기
     border: 1;
     border-style: outset;
+    display: flex;
+    align-items: center;  // 수직 중앙 정렬
+    justify-content: center;  // 수평 중앙 정렬
+    flex: 1;    // 남은 공간을 채우기
 `;
 
 const StyledLink = styled(Link)`
@@ -57,7 +60,6 @@ function Main(){
                 
                 <StyledArticle>
                     <StyledLink to="/content">ContentPage</StyledLink>  {/*게시물*/}
-                    <StyledLink to="/login/signup">SignUpPage</StyledLink>  {/*회원가입*/}
                 </StyledArticle>
                 {/* <hr/>
                 <AdminPage/>
