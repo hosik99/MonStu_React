@@ -1,7 +1,8 @@
-import React, { useState,useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { signUpController } from "../contorller/signUpController"
-
+import LoadingPage from "../LoadingPage";
+import { loginController } from "../../contorller/loginController";
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
     display: flex;
     justify-content: center;
@@ -66,47 +67,57 @@ const ErrorMessage = styled.span`
     margin-top: 5px;
     display: block;
 `;
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
+function LoginPage(){
 
-function SignUpPage(){
-    
-    const [formData,setFormData] = useState({
-        email : '',
-        userPw: '',
-        birth: '',
-        country: '',
-        nickname: '',
-    });
-
-    const [confirmPassword,setConfirmPassword] = useState('');
     const [loading,setLoading] = useState(false);
 
+    //FORM DATA LIST
+    const [formData,setFormData] = useState({
+        email : '',
+        memberPw: '',
+    });
+
+    //VAILDEING FORM DATA
+    const formVaild = () => {
+        if(formData.email==='') return true;
+        if(formData.memberPw==='') return true;
+    };
+
+    //SAVE FORM DATA TO LOCAL
     const handleInputChange = (event) => {
         const {name,value} = event.target;
         setFormData({
             ...formData,
-            [name]:value
+            [name]:value.trim()
         });
     };
-    const handleConPwChange = (event) => {setConfirmPassword(event.target.value)};
 
     const saveData =async (e) => {
         e.preventDefault(); // 기본 폼 제출 방지
+        if(formVaild()) return alert("입력을 다시 확인해주세요");    //폼 데이터 유효성 검사
+        
         try {
             setLoading(true);
-            const response = await signUpController('/signup','post',{
-                formData,
+            const response = await loginController('/login','post',{
+                memberDTO: {
+                    email: formData.email,
+                    memberPw: formData.memberPw,
+                },
             });
-            alert(response.data);
+            if(response && response.data){alert(response.data);}
         } catch (error) {
             if(error && error.response.data){alert(error.response.data);}
         }
         setLoading(false);
     };  
 
+    if(loading){return <LoadingPage/>}
+
     return(
         <Container>
             <Form onSubmit={saveData}>
-                <FormTitle>Sign Up</FormTitle>
+                <FormTitle>Login Page</FormTitle>
                 <hr/>
                 <br/>
                 <FormGroup>
@@ -115,28 +126,12 @@ function SignUpPage(){
                 </FormGroup>
                 <FormGroup>
                     <Label>Password: </Label>
-                    <Input type="password" name="userPw" value={formData.userPw} onChange={handleInputChange} />
+                    <Input type="password" name="memberPw" value={formData.memberPw} onChange={handleInputChange} />
                 </FormGroup>
-                <FormGroup>
-                    <Label>Confirm Password: </Label>
-                    <Input type="password" name="confirmPassword" value={confirmPassword} onChange={handleConPwChange} />
-                </FormGroup>
-                <FormGroup>
-                    <Label>Birthday: </Label>
-                    <Input type="date" name="birth" value={formData.birth} onChange={handleInputChange} />
-                </FormGroup>
-                <FormGroup>
-                    <Label>Country: </Label>
-                    <Input type="text" name="country" value={formData.country} onChange={handleInputChange} />
-                </FormGroup>
-                <FormGroup>
-                    <Label>Nickname: </Label>
-                    <Input type="text" name="nickname" value={formData.nickname} onChange={handleInputChange} />
-                </FormGroup>
-                <Button type="submit">Sign Up</Button>
+                <Button type="submit">Login</Button>
             </Form>
         </Container>
     );
 }
 
-export default SignUpPage;
+export default LoginPage;

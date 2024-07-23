@@ -1,12 +1,9 @@
 import React from "react";
 
-import ContentPage from "./ContentPage";
-import AdminPage from "./AdminPage";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import Sidebar from "../components/Sidebar";
 
 const Wrapper = styled.div`
     display: flex;
