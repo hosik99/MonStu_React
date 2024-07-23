@@ -150,7 +150,7 @@ function LoginPage(){
                     <Input type="password" name="memberPw" value={formData.memberPw} onChange={handleInputChange} />
                 </FormGroup>
                 <Button type="submit">Login</Button>
-                <StyledLink>sign up</StyledLink>
+                <StyledLink to="/login/signup">sign up</StyledLink>
             </Form>
         </Container>
     );

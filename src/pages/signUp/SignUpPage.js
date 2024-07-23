@@ -2,6 +2,7 @@ import React, { useState,useEffect } from "react";
 import styled from "styled-components";
 import { signUpController } from "../../contorller/signUpController";
 import LoadingPage from "../LoadingPage";
+import { useNavigate } from "react-router-dom";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
     display: flex;
@@ -69,7 +70,9 @@ const ErrorMessage = styled.span`
 `;
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function SignUpPage(){
-    
+
+    const navigate = useNavigate();
+
     //FORM DATA LIST
     const [formData,setFormData] = useState({
         email : '',
@@ -124,7 +127,11 @@ function SignUpPage(){
                     nickname: formData.nickname,
                 },
             });
-            if(response && response.data){alert(response.data);}
+            if(response && response.data){
+                alert(response.data);
+                navigate('/',{replace:true}); // 성공 후 메인 페이지로 이동
+            }
+            
         } catch (error) {
             if(error && error.response.data){alert(error.response.data);}
         }
@@ -141,7 +148,7 @@ function SignUpPage(){
                 <br/>
                 <FormGroup>
                     <Label>ID (email): </Label>
-                    <Input type="text" name="email" value={formData.email} onChange={handleInputChange} />
+                    <Input type="email" name="email" value={formData.email} onChange={handleInputChange} />
                 </FormGroup>
                 <FormGroup>
                     <Label>Password: </Label>
