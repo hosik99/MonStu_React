@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-import { pwQuizController } from "../contorller/pwQuizController";
+import { pwQuizController } from "../../contorller/pwQuizController";
 import { Snackbar } from "@mui/material";
 
 // Modal.setAppElement('#root');

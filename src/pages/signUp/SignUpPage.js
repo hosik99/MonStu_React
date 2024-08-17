@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import styled from "styled-components";
 import { signUpController } from "../../contorller/signUpController";
-import LoadingPage from "../LoadingPage";
+import LoadingPage from "../etc/LoadingPage";
 import { useNavigate } from "react-router-dom";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
@@ -29,6 +29,13 @@ const FormTitle = styled.h2`
 
 const FormGroup = styled.div`
     margin-bottom: 20px;
+`;
+
+const SubFormGroup = styled.div`
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 `;
 
 const Label = styled.label`
@@ -68,6 +75,23 @@ const ErrorMessage = styled.span`
     margin-top: 5px;
     display: block;
 `;
+
+const SubButton = styled.button`
+    width: 20%;
+    padding: 10px;
+    background-color: ${props => props.disabled ? '#6c757d' : '#007bff'};
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: ${props => props.disabled ? '#6c757d' : '#0056b3'};
+    }
+`;
+
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function SignUpPage(){
 
@@ -76,6 +100,7 @@ function SignUpPage(){
     //FORM DATA LIST
     const [formData,setFormData] = useState({
         email : '',
+        emailCheck : '',
         memberPw: '',
         birth: '',
         country: '',
@@ -83,8 +108,10 @@ function SignUpPage(){
         confirmPassword: '',
     });
 
-
     const [isEqualPw,setIsEqualPw] = useState(true);
+    const [checkCode,setCheckCode] = useState('no code');   //Email checkCode
+    const [isChecked,setIsChecked] = useState(false);       //is same emailcode? 
+    const [isExistsEmail,setIsExistsEmail] = useState(false);
     const [loading,setLoading] = useState(false);
 
     //SAVE FORM DATA TO LOCAL
@@ -96,23 +123,68 @@ function SignUpPage(){
         });
     };
         
-    //CONFIRM PASSWORDS
+    //CONFIRM PASSWORDS, CKECKCODE
     useEffect(() => {
         setIsEqualPw(formData.confirmPassword === formData.memberPw);
-    }, [formData.confirmPassword, formData.memberPw]);
+        setIsChecked(formData.emailCheck === checkCode);
+    }, [
+        formData.confirmPassword, formData.memberPw,
+        formData.emailCheck
+    ]);
 
     //VAILDEING FORM DATA
     const formVaild = () => {
-        if(formData.email==='') return true;
-        if(formData.memberPw==='') return true;
-        if(formData.nickname==='') return true;
-        if(!isEqualPw) return true; //비밀번호 확인과 비밀번호가 같은지
+        if(formData.email==='') return '이메일을 다시 확인해주세요.';
+        if(formData.memberPw==='') return '비밀번호를 다시 확인해주세요';
+        if(formData.nickname==='') return '닉네임을 다시 확인해주세요';
+        if(!isEqualPw) return '비밀번호가 일치하지 않습니다.'; //확인비밀번호와 비밀번호가 같은지 확인
+        if(!isChecked) return '이메일 인증 코드가 일치하지 않습니다.';  //이메일 인증 코드 같은지 확인
+        return null;
     };
+
+    //VERIFY EMAIL ALREADY EXISTS
+    const checkEmailExists =async (e) => {
+        if(formData.email==='') return alert('이메일을 입력해 주세요.');
+
+        try {
+            const response = await signUpController(`/check?email=${encodeURIComponent(formData.email)}`,'post',{});
+            if(response && response.data){
+                setIsExistsEmail(true);
+                alert(response.data.message);
+            }
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 409) {
+                    alert(error.response.data.message);
+                } else {
+                    alert('잠시 후 다시 시도해주세요.');
+                }
+            } else {
+                alert('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            }
+        }
+    };  
+
+    //SEND EMAIL CHECK CODE ,GET EMAIL CHECK CODE FROM SERVER
+    const sendEmailCheck =async (e) => {
+        if(formData.email==='') return alert('이메일을 입력해 주세요.');
+
+        try {
+            const response = await signUpController('/emailcode?email='+formData.email,'post',{});
+            if(response && response.data){
+                setCheckCode(response.data.isSend);
+                alert('이메일을 확인해주세요.')
+            }
+        } catch (error) {
+            if(error){ alert('잠시 후 다시 시도해주세요.'); }
+        }
+    };  
 
     //SENT FORM DATA TO SERVER
     const saveData =async (e) => {
         e.preventDefault(); // 기본 폼 제출 방지
-        if(formVaild()) return alert("입력을 다시 확인해주세요");    //폼 데이터 유효성 검사
+        let vaildMsg = formVaild();
+        if(vaildMsg) return alert(vaildMsg);    //폼 데이터 유효성 검사
         
         try {
             setLoading(true);
@@ -147,8 +219,20 @@ function SignUpPage(){
                 <hr/>
                 <br/>
                 <FormGroup>
-                    <Label>ID (email): </Label>
-                    <Input type="email" name="email" value={formData.email} onChange={handleInputChange} />
+                    <Label>ID (email): </Label> 
+                    <SubFormGroup>
+                        <Input type="email" name="email" value={formData.email} onChange={handleInputChange} />
+                        <SubButton type="button" onClick={checkEmailExists} disabled={isExistsEmail}>
+                        {isExistsEmail ? '✓' : 'Check'}
+                        </SubButton>
+                    </SubFormGroup>
+                </FormGroup>
+                <FormGroup>
+                    <Label>Email Authentication Code: </Label>
+                    <SubFormGroup>
+                        <Input type="text" name="emailCheck" value={formData.emailCheck} onChange={handleInputChange} />
+                        <SubButton type="button" onClick={sendEmailCheck}>Send</SubButton>
+                    </SubFormGroup>
                 </FormGroup>
                 <FormGroup>
                     <Label>Password: </Label>

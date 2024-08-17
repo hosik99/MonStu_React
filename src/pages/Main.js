@@ -56,15 +56,9 @@ function Main(){
         <Wrapper>
             <Header/>
             <StyledMain>
-                {/* <Sidebar/> */}
-                
                 <StyledArticle>
-                    <StyledLink to="/content">ContentPage</StyledLink>  {/*게시물*/}
+                    <StyledLink to="/select/title">MyContents</StyledLink>  {/*게시물*/}
                 </StyledArticle>
-                {/* <hr/>
-                <AdminPage/>
-                <hr/>
-                <Link to="/login/signup">SignUpPage</Link> */}
             </StyledMain>
             <Footer/>
         </Wrapper>

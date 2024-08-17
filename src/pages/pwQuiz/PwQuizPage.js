@@ -1,11 +1,11 @@
 import React, { useState,useEffect } from "react";
-import { pwQuizController } from "../contorller/pwQuizController";
-import Loading from "./LoadingPage";
-import ErrorPage from "./ErrorPage";
-import PwQuizList from "../components/PwQuizList";
+import { pwQuizController } from "../../contorller/pwQuizController";
+import Loading from "../etc/LoadingPage";
+import ErrorPage from "../etc/ErrorPage";
+import PwQuizList from "../../components/PwQuizList";
 import PwQuizForm from "./PwQuizForm";
 import { Snackbar } from "@mui/material";
-import LoadingPage from "./LoadingPage";
+import LoadingPage from "../etc/LoadingPage";
 
 
 //<Route path="/admin/pwquiz" element={<PwQuizPage/>}></Route>

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import LoadingPage from "../LoadingPage";
+import LoadingPage from "../etc/LoadingPage";
 import { loginController } from "../../contorller/loginController";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
     display: flex;
@@ -91,6 +91,8 @@ const ErrorMessage = styled.span`
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function LoginPage(){
 
+    const navigate = useNavigate();
+
     const [loading,setLoading] = useState(false);
 
     //FORM DATA LIST
@@ -121,14 +123,13 @@ function LoginPage(){
         try {
             setLoading(true);
             const response = await loginController('/login','post',{
-                memberDTO: {
-                    email: formData.email,
-                    memberPw: formData.memberPw,
-                },
+                email: formData.email,
+                memberPw: formData.memberPw,
             });
-            if(response && response.data){alert(response.data);}
+            localStorage.setItem('authToken', response.data.token);
+            navigate('/',{replace:true}); // 성공 후 메인 페이지로 이동
         } catch (error) {
-            if(error && error.response.data){alert(error.response.data);}
+            alert('Login Error');
         }
         setLoading(false);
     };  

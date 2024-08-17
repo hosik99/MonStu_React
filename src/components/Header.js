@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useAuth } from "../security/useAuth";
 
 const HeaderStyle = styled.header`
     background: #ACE1AF;
@@ -65,17 +66,19 @@ const Nav = styled.nav`
 
 function Header() {
 
-    return (
-        <HeaderStyle>
-            <Logo>MONSTU</Logo>
-            <Nav>
-                <ul>
-                  <li><Link to="/about">About</Link></li>
-                  <li><Link to="/login">Login</Link></li>
-                </ul>
-            </Nav>
-        </HeaderStyle>
-    );
+  const isAuthenticated = useAuth();
+  
+  return (
+      <HeaderStyle>
+          <Logo>MONSTU</Logo>
+          <Nav>
+              <ul>
+                <li><Link to="/about">About</Link></li>
+                <li>{!isAuthenticated ? (<Link to="/login">Login</Link>) : (<Link to="/logout">Logout</Link>)}</li>
+              </ul>
+          </Nav>
+      </HeaderStyle>
+  );
 }
 
 export default Header;

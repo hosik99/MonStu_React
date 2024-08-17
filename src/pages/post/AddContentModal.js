@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
-import { contentController } from "../contorller/contentController";
-import LoadingPage from "./LoadingPage";
+import { contentController } from "../../contorller/contentController";
+import LoadingPage from "../etc/LoadingPage";
 
 const StyledModal = styled(Modal)`
     display: flex;
