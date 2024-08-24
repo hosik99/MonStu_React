@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Header from "../../components/Header";
-import WordNote from "./WordNote";
 import { contentController } from "../../contorller/contentController";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import PopupBox from "./PopupBox";
+import { translationController } from "../../contorller/translationController";
+import WordHistory from "./WordHistory";
 
 // 전체 레이아웃을 감싸는 컨테이너
 const Container = styled.div`
@@ -47,39 +48,57 @@ function ContentPage() {
 
   const { id } = useParams();
   const [content, setContent] = useState([]);
-  const [myWordDTOSList, setMyWordDTOSList] = useState([]);
+  const [myWordDTOList, setMyWordDTOList] = useState([]);
+  const [transHistory, setTransHistory] = useState([]);
   const [selectText , setSelectText] = useState('');
+  const [translatedText,setTranslatedText] = useState('');
+  const [popupBoxPosition, setPopupBoxPosition] = useState(null); // 팝업 위치 상태
 
   //텍스트 하이라이팅 했을때 실행 
   const handleTextSelection = () => {
-    const selectedText = window.getSelection().toString().trim;
+    const selection = window.getSelection(); // 여기에서 selection을 정의
+    const selectedText = selection.toString().trim();
 
     if (selectedText) {
-      console.log(`Selected text: ${selectedText}`);
       setSelectText(selectedText);
+
+      // 텍스트 위치 계산
+      const range = selection.getRangeAt(0);  //사용자가 선택한 첫 번째 텍스트 범위를 나타내는 Range 객체를 가져옴
+      const rect = range.getBoundingClientRect(); //선택된 텍스트 영역의 위치와 크기를 포함한 DOMRect 객체 반환 (top, left, right, bottom, width, height 등의 정보)
+      setPopupBoxPosition({
+        top: rect.top + window.scrollY - 30, // 팝업 박스가 텍스트 위에 위치하도록 조정
+        left: rect.left + window.scrollX + rect.width / 3, // 텍스트의 가로위치
+      });
+    } else {
+      setPopupBoxPosition(null); // 선택 취소 시 팝업 박스 숨김
     }
   };
 
+  // 새로운 요소를 transHistory에 추가하는 함수
+  const addToHistory = (myWordId,targetText,newText) => {
+    setTransHistory(prevHistory => [...prevHistory, {'myWordId':myWordId,'targetWord':targetText,'translatedWord':newText,'contentId':id}]);
+    console.log('myWordId: '+myWordId+' targetText: '+targetText + ' newText: ' +newText)
+    console.log('transHistory: '+transHistory);
+  };
+
   //PAPAGO API로부터 단어 번역요청
-  const getTranslationWord = async () => {
-
-    bodyData = {
-      source:'en', //번역 텍스트 언어 코드
-      target: 'ko', //번역 될 언어 코드
-      text:selectText
-    }
-
+  const translationWord = async (selectText) => {
+    console.log(`translationWord -> ${selectText}`);
     try {
-      const response = await contentController(`https://openapi.naver.com/v1/papago/n2mt`, 'post', bodyData);
+      const response = await translationController(`/translation`, 'post', {
+        source:'en', //원본 언어 (auto 사용시 자동으로 소스 감지)
+        target: 'ko', //번역 될 언어 코드
+        text:selectText //1회 최대 5,000자 까지
+      });
       if (response && response.data) {
-        setContent(response.data.contentDTO);
-        setMyWordDTOSList(response.data.myWordDTOSList ? response.data.myWordDTOSList : "데이터가 없습니다");
-      } else if (response.status === 204) {
-        alert('게시물이 없습니다.');
-      } 
+        console.log(response.data);
+        const result = response.data.message.result;
+        setTranslatedText(result.translatedText);
+        console.log('tra_selectText: ' + selectText);
+        addToHistory(result.myWordId,selectText,result.translatedText);
+      }
     } catch (error) {
-        alert("데이터를 가져올 수 없습니다.");
-        navigate(-1); // 이전 페이지로 이동
+        console.log(`error : ${error.message}`);
     }
   };
 
@@ -91,13 +110,13 @@ function ContentPage() {
       const response = await contentController(`/${numericId}`, 'get', null);
       if (response && response.data) {
         setContent(response.data.contentDTO);
-        setMyWordDTOSList(response.data.myWordDTOSList ? response.data.myWordDTOSList : "데이터가 없습니다");
+        setMyWordDTOList(response.data.myWordDTOList ? response.data.myWordDTOList : "데이터가 없습니다");
       } else if (response.status === 204) {
         alert('게시물이 없습니다.');
+        navigate(-1); // 이전 페이지로 이동
       } 
     } catch (error) {
         alert("데이터를 가져올 수 없습니다.");
-        navigate(-1); // 이전 페이지로 이동
     }
   };
 
@@ -106,26 +125,30 @@ function ContentPage() {
 
     //텍스트 하이라이팅 메소드
     document.addEventListener('mouseup', handleTextSelection);
-    return () => {
+    return () => {  //// 컴포넌트가 언마운트될 때 실행
       document.removeEventListener('mouseup', handleTextSelection);
     };
   }, [id]); // cancelTokenSource를 의존성 배열에 추가
+
+  useEffect(() => {
+    if (selectText && !selectText=='') { translationWord(selectText); }
+  },[selectText])
 
   return (
     <Container>
       <Header />
       <MainContent>
         <StyledContent>{content.content}</StyledContent>
-
+        <PopupBox text={translatedText} position={popupBoxPosition} />
         <Words>
-          <WordNote />
+          <WordHistory list={transHistory}/>
           <StyledWord>
-            {Array.isArray(myWordDTOSList) ? (
-              myWordDTOSList.map((word) => (
-                <div key={word.myWordId}>{word.word}</div>
+            {Array.isArray(myWordDTOList) ? (
+              myWordDTOList.map((data) => (
+                <div key={data.myWordId}>{data.targetWord}  -  {data.translatedWord}</div>
               ))
             ) : (
-              <div>{myWordDTOSList}</div>
+              <div>{myWordDTOList}</div>
             )}
           </StyledWord>
         </Words>
