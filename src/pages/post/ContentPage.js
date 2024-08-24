@@ -45,15 +45,15 @@ function ContentPage() {
 
   const navigate = useNavigate();
 
-  const { id } = useParams();
-  const [content, setContent] = useState([]);
+  const { id } = useParams(); //content id
+  const [content, setContent] = useState([]); 
   const [myWordDTOList, setMyWordDTOList] = useState([]);
-  const [transHistory, setTransHistory] = useState([]);
-  const [selectText , setSelectText] = useState('');
-  const [translatedText,setTranslatedText] = useState('');
-  const [popupBoxPosition, setPopupBoxPosition] = useState(null); // 팝업 위치 상태
+  const [transHistory, setTransHistory] = useState([]); //HIGHLIGHTED TEXT HISTORY
+  const [selectText , setSelectText] = useState('');  //HIGHLIGHTED TEXT
+  const [translatedText,setTranslatedText] = useState('');  
+  const [popupBoxPosition, setPopupBoxPosition] = useState(null); // 팝업 위치
 
-  //텍스트 하이라이팅 했을때 실행 
+  //WHEN TEXT HIGHLIGHTED
   const handleTextSelection = () => {
     const selection = window.getSelection(); // 여기에서 selection을 정의
     const selectedText = selection.toString().trim();
@@ -73,16 +73,14 @@ function ContentPage() {
     }
   };
 
-  // 새로운 요소를 transHistory에 추가하는 함수
+  //ADD  NEW TRANSLATED TEXT TO HISTORY
   const addToHistory = (myWordId,targetText,newText) => {
     setTransHistory(prevHistory => [...prevHistory, {'myWordId':myWordId,'targetWord':targetText,'translatedWord':newText,'contentId':id}]);
     console.log('myWordId: '+myWordId+' targetText: '+targetText + ' newText: ' +newText)
-    console.log('transHistory: '+transHistory);
   };
 
-  //PAPAGO API로부터 단어 번역요청
+  //REQUEST TO PAPAGO API
   const translationWord = async (selectText) => {
-    console.log(`translationWord -> ${selectText}`);
     try {
       const response = await translationController(`/translation`, 'post', {
         source:'en', //원본 언어 (auto 사용시 자동으로 소스 감지)
@@ -93,7 +91,7 @@ function ContentPage() {
         console.log(response.data);
         const result = response.data.message.result;
         setTranslatedText(result.translatedText);
-        console.log('tra_selectText: ' + selectText);
+        console.log('Translated Text : ' + selectText);
         addToHistory(result.myWordId,selectText,result.translatedText);
       }
     } catch (error) {
@@ -101,7 +99,7 @@ function ContentPage() {
     }
   };
 
-  //ContentDTO 객체 서버에게 요청
+  //REQUEST CONTENT DATA TO SPRING 
   const getContents = async () => {
 
     try {
@@ -109,6 +107,7 @@ function ContentPage() {
       const response = await contentController(`/${numericId}`, 'get', null);
       if (response && response.data) {
         setContent(response.data.contentDTO);
+        console.log(response.data.myWordDTOList);
         setMyWordDTOList(response.data.myWordDTOList ? response.data.myWordDTOList : "데이터가 없습니다");
       } else if (response.status === 204) {
         alert('게시물이 없습니다.');
@@ -124,11 +123,13 @@ function ContentPage() {
 
     //텍스트 하이라이팅 메소드
     document.addEventListener('mouseup', handleTextSelection);
-    return () => {  //// 컴포넌트가 언마운트될 때 실행
+    // 컴포넌트가 언마운트될 때 실행 - cleanup함수
+    return () => {  
       document.removeEventListener('mouseup', handleTextSelection);
     };
-  }, [id]); // cancelTokenSource를 의존성 배열에 추가
+  }, [id]);
 
+  //Run translation function when selectText changes
   useEffect(() => {
     if (selectText && !selectText=='') { translationWord(selectText); }
   },[selectText])
