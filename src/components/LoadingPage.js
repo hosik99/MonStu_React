@@ -1,17 +1,10 @@
 import React from "react";
-import styled from "styled-components";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
-const FooterStyle = styled.footer`
-    background: #f8f8f8;
-    padding: 20px;
-    text-align: center;
-    flex: 0 1 auto;
-`
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
-function Footer(){
+function LoadingPage(){
     return(
-        <FooterStyle>Footer</FooterStyle>
-    )
+        <div>Loading</div>
+    );
 }
 
-export default Footer;
+export default LoadingPage;

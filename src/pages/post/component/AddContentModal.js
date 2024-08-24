@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
-import { contentController } from "../../contorller/contentController";
-import LoadingPage from "../etc/LoadingPage";
 
+import LoadingPage from "../../../components/LoadingPage";
+import {contentController} from "../../../hooks/controller/contentController";
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const StyledModal = styled(Modal)`
     display: flex;
     flex-direction: column;
@@ -64,8 +65,7 @@ const StyledButton = styled.button`
         background-color: #0056b3;
     }
 `;
-
-
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function AddContentModal(props){
 
     const {closeModal,isModalOpen} = props;

@@ -1,8 +1,6 @@
-import { Button } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
-
-// PopupBox의 컨테이너 스타일
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Popup = styled.div`
   position: absolute;
   display: flex;
@@ -11,7 +9,6 @@ const Popup = styled.div`
   pointer-events: none; // 팝업 박스가 마우스 이벤트(클릭 등)를 무시하도록 설정
 `;
 
-// 텍스트 영역 스타일
 const TextArea = styled.div`
   background-color: #333; // 검정색 배경
   color: white;
@@ -21,8 +18,7 @@ const TextArea = styled.div`
   display: flex;
   align-items: center;
 `;
-
-
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function PopupBox({ text, position }) {
   if (!position || !text) return null;
 

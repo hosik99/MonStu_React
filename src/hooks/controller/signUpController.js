@@ -1,4 +1,4 @@
-import { connectSpring } from "../api/preAxios";
+import {connectSpring} from "../api/preAxios";
 
 export const signUpController = (url,type='get',data=null) => {
 

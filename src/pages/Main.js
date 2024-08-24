@@ -1,10 +1,10 @@
 import React from "react";
-
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -50,7 +50,7 @@ const StyledLink = styled(Link)`
         /* background-color: #269abc; // Even darker blue when active */
     }
 `;
-
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function Main(){
     return(
         <Wrapper>

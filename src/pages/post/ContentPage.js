@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Header from "../../components/Header";
-import { contentController } from "../../contorller/contentController";
 import { useNavigate, useParams } from "react-router-dom";
-import PopupBox from "./PopupBox";
-import { translationController } from "../../contorller/translationController";
-import WordHistory from "./WordHistory";
 
-// 전체 레이아웃을 감싸는 컨테이너
+import Header from "../../components/Header";
+import PopupBox from "./component/PopupBox";
+import WordHistory from "./component/WordHistory";
+import {translationController} from "../../hooks/controller/translationController";
+import {contentController} from "../../hooks/controller/contentController";
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
 `;
 
-// 각 컬럼 스타일
 const MainContent = styled.div`
   color : white;
   display: flex;
@@ -41,7 +40,7 @@ const StyledContent = styled.div`
     padding: 20px;
     background-color: #739bb5; /* 파란색 */
 `;
-
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function ContentPage() {
 
   const navigate = useNavigate();

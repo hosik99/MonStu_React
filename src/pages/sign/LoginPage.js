@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import LoadingPage from "../etc/LoadingPage";
-import { loginController } from "../../contorller/loginController";
 import { Link, useNavigate } from "react-router-dom";
-/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
+
+import LoadingPage from "../../components/LoadingPage";
+import {loginController} from "../../hooks/controller/loginController";
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
     display: flex;
     justify-content: center;
@@ -88,14 +89,13 @@ const ErrorMessage = styled.span`
     margin-top: 5px;
     display: block;
 `;
-/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function LoginPage(){
 
     const navigate = useNavigate();
-
     const [loading,setLoading] = useState(false);
 
-    //FORM DATA LIST
+    //FORM DATA STYLE
     const [formData,setFormData] = useState({
         email : '',
         memberPw: '',

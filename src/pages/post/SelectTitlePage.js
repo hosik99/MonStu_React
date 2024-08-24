@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Header from "../../components/Header";
 import styled from "styled-components";
-import { contentController } from "../../contorller/contentController";
-import SideBtn from "./SideBtn";
-import AddContentModal from "./AddContentModal";
 import { Link } from "react-router-dom";
 
+import Header from "../../components/Header";
+import AddContentModal from "./component/AddContentModal";
+import {contentController} from "../../hooks/controller/contentController";
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -41,7 +41,7 @@ const StyledLink = styled(Link)`
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 클릭 시 그림자 감소 */
     }
 `;
-
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function SelectTitlePage(){
 
     const [contents,setContents] = useState([]);

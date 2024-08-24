@@ -1,8 +1,8 @@
-import { useScrollTrigger } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { myWordController } from "../../contorller/myWordController";
 
+import {myWordController} from "../../../hooks/controller/myWordController";
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const List = styled.div`
     flex: 1;
     padding: 20px;
@@ -20,6 +20,7 @@ const List = styled.div`
   private String targetWord;
   private String translatedWord;
 */
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function WordHistory({list}){
 
   const [checkedItems, setCheckedItems] = useState([]);

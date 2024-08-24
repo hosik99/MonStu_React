@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth } from "../security/useAuth";
-
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const HeaderStyle = styled.header`
     background: #ACE1AF;
     padding: 15px 30px;
@@ -18,7 +18,6 @@ const HeaderStyle = styled.header`
     }
 `;
 
-// Styled logo component
 const Logo = styled.div`
     color: white;
     font-size: 20px;
@@ -27,7 +26,6 @@ const Logo = styled.div`
     justify-content: flex-start;
 `;
 
-// Styled nav component, 커스텀 prop이 DOM 요소에 전달되지 않도록 필터링
 const Nav = styled.nav`
   ul {
     list-style: none;
@@ -63,7 +61,7 @@ const Nav = styled.nav`
     }
   }
 `;
-
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function Header() {
 
   const isAuthenticated = useAuth();
