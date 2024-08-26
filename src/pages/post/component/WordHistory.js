@@ -74,7 +74,7 @@ function WordHistory({list}){
               </div>
             ))
           ) : (
-            <div>no Data</div>
+            <div>No History Data</div>
           )}
       </List>
   );

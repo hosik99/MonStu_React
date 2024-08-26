@@ -7,6 +7,10 @@ import PopupBox from "./component/PopupBox";
 import WordHistory from "./component/WordHistory";
 import {translationController} from "../../hooks/controller/translationController";
 import {contentController} from "../../hooks/controller/contentController";
+import {validTranText,containSpace} from "../../hooks/method/translationVaild";
+import TextSelectionHandler from "./component/TextSelectionHandler";
+import MyWords from "./component/MyWords";
+import { Button } from "@mui/material";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
   display: flex;
@@ -22,23 +26,28 @@ const MainContent = styled.div`
 
 const Words = styled.div`
   display: flex;
-  flex-direction: column; /* 세로 정렬 */
+  flex-direction: column;
   flex: 1;
-`;
-
-const StyledWord = styled.div`
-    flex: 1;
-    padding: 20px;
-    background-color: #8561c5; /* 보라색 */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  position: relative; /* Relative positioning for child elements */
 `;
 
 const StyledContent = styled.div`
     flex: 1;
     padding: 20px;
     background-color: #739bb5; /* 파란색 */
+`;
+
+const SwitchButton = styled.button`
+  position: absolute; /* Absolute positioning for the button */
+  top: 10px; /* Adjust distance from the top */
+  right: 10px; /* Adjust distance from the right */
+  background-color: ${props => props.active ? '#4caf50' : '#f44336'};
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  z-index: 1; /* Make sure button is above other content */
 `;
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function ContentPage() {
@@ -48,39 +57,28 @@ function ContentPage() {
   const { id } = useParams(); //content id
   const [content, setContent] = useState([]); 
   const [myWordDTOList, setMyWordDTOList] = useState([]);
-  const [transHistory, setTransHistory] = useState([]); //HIGHLIGHTED TEXT HISTORY
+  const [historyOption,setHistoryOption] = useState(true);  //true shows 'wordsHistory' : false shows 'sentencesHistory'
+  const [wordsHistory, setWordsHistory] = useState([]); //HIGHLIGHTED WORDS HISTORY
+  const [sentencesHistory, setSentencesHistory] = useState([]); //HIGHLIGHTED SENTENCES HISTORY
   const [selectText , setSelectText] = useState('');  //HIGHLIGHTED TEXT
   const [translatedText,setTranslatedText] = useState('');  
   const [popupBoxPosition, setPopupBoxPosition] = useState(null); // 팝업 위치
 
-  //WHEN TEXT HIGHLIGHTED
-  const handleTextSelection = () => {
-    const selection = window.getSelection(); // 여기에서 selection을 정의
-    const selectedText = selection.toString().trim();
-
-    if (selectedText) {
-      setSelectText(selectedText);
-
-      // 텍스트 위치 계산
-      const range = selection.getRangeAt(0);  //사용자가 선택한 첫 번째 텍스트 범위를 나타내는 Range 객체를 가져옴
-      const rect = range.getBoundingClientRect(); //선택된 텍스트 영역의 위치와 크기를 포함한 DOMRect 객체 반환 (top, left, right, bottom, width, height 등의 정보)
-      setPopupBoxPosition({
-        top: rect.top + window.scrollY - 30, // 팝업 박스가 텍스트 위에 위치하도록 조정
-        left: rect.left + window.scrollX + rect.width / 3, // 텍스트의 가로위치
-      });
-    } else {
-      setPopupBoxPosition(null); // 선택 취소 시 팝업 박스 숨김
-    }
-  };
 
   //ADD  NEW TRANSLATED TEXT TO HISTORY
   const addToHistory = (myWordId,targetText,newText) => {
-    setTransHistory(prevHistory => [...prevHistory, {'myWordId':myWordId,'targetWord':targetText,'translatedWord':newText,'contentId':id}]);
-    console.log('myWordId: '+myWordId+' targetText: '+targetText + ' newText: ' +newText)
+    console.log('myWordId: '+myWordId+' targetText: '+targetText + ' newText: ' +newText);
+    console.log(containSpace(targetText));
+    !containSpace(targetText) ? 
+      setWordsHistory(prevHistory => [...prevHistory, {'myWordId':myWordId,'targetWord':targetText,'translatedWord':newText,'contentId':id}]):
+      setSentencesHistory(prevHistory => [...prevHistory, {'myWordId':myWordId,'targetWord':targetText,'translatedWord':newText,'contentId':id}]);
+    
   };
 
   //REQUEST TO PAPAGO API
   const translationWord = async (selectText) => {
+    if( !validTranText(selectText) ) return null; //Text가 영어인지 확안
+    
     try {
       const response = await translationController(`/translation`, 'post', {
         source:'en', //원본 언어 (auto 사용시 자동으로 소스 감지)
@@ -92,7 +90,7 @@ function ContentPage() {
         const result = response.data.message.result;
         setTranslatedText(result.translatedText);
         console.log('Translated Text : ' + selectText);
-        addToHistory(result.myWordId,selectText,result.translatedText);
+        if( selectText!==result.translatedText) addToHistory(result.myWordId,selectText,result.translatedText); //번역 되었을 경우
       }
     } catch (error) {
         console.log(`error : ${error.message}`);
@@ -118,15 +116,12 @@ function ContentPage() {
     }
   };
 
+  //컴포넌트 실행 시 서버로 부터 content data를 받아옴
+  //텍스트 하이라이팅 할 시 실행 할 함수 추가 (popupBox)
   useEffect(() => {
     if (id) getContents(); // 페이지 접속 시 id를 넘겨 받았으면 서버로부터 데이터를 받아옴
-
-    //텍스트 하이라이팅 메소드
-    document.addEventListener('mouseup', handleTextSelection);
-    // 컴포넌트가 언마운트될 때 실행 - cleanup함수
-    return () => {  
-      document.removeEventListener('mouseup', handleTextSelection);
-    };
+    TextSelectionHandler.setUpTextSelectionHandler(setSelectText, setPopupBoxPosition); //document 'mouseup' 이벤트에 실행 함수 추가
+    return () => TextSelectionHandler.cleanupTextSelectionHandler();  ////document 'mouseup' 이벤트에 추가했던 함수 삭제
   }, [id]);
 
   //Run translation function when selectText changes
@@ -140,18 +135,18 @@ function ContentPage() {
       <MainContent>
         <StyledContent>{content.content}</StyledContent>
         <PopupBox text={translatedText} position={popupBoxPosition} />
+
         <Words>
-          <WordHistory list={transHistory}/>
-          <StyledWord>
-            {Array.isArray(myWordDTOList) ? (
-              myWordDTOList.map((data) => (
-                <div key={data.myWordId}>{data.targetWord}  -  {data.translatedWord}</div>
-              ))
-            ) : (
-              <div>{myWordDTOList}</div>
-            )}
-          </StyledWord>
+          <SwitchButton
+            active={historyOption}
+            onClick={() => setHistoryOption(prev => !prev)}
+          >
+            {historyOption ? 'Words' : 'Sentences'}
+          </SwitchButton>
+          {historyOption ? <WordHistory list={wordsHistory}/> : <WordHistory list={sentencesHistory}/>}
+          <MyWords myWordDTOList={myWordDTOList}></MyWords>
         </Words>
+
       </MainContent>
     </Container>
   );

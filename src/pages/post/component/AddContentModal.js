@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import LoadingPage from "../../../components/LoadingPage";
 import {contentController} from "../../../hooks/controller/contentController";
+import { useNavigate } from "react-router-dom";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const StyledModal = styled(Modal)`
     display: flex;
@@ -69,6 +70,7 @@ const StyledButton = styled.button`
 function AddContentModal(props){
 
     const {closeModal,isModalOpen} = props;
+    const navigate = useNavigate();
     const [title,setTitle] = useState();
     const [content,setContent] = useState();
     
@@ -87,6 +89,7 @@ function AddContentModal(props){
             });
             alert(response.data);
             closeModal();
+            navigate(0); // 페이지를 새로고침
         } catch (error) {
             if(error && error.response.data){alert(error.response.data);}
         }
