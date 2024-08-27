@@ -39,12 +39,11 @@ function WordHistory({list}){
   };
 
   const saveCheckedItems = async () => {
-    console.log(`checkedItems -> ${checkedItemsRef.current}`);
     checkedItemsRef.current.forEach(item => {
-      console.log(item);
+      console.log('history items : {}',item);
     });
     try {
-      const response = await myWordController(`/savewords`, 'post', checkedItemsRef.current);
+      const response = await myWordController(`/save`, 'post', checkedItemsRef.current);
       if (response && response.data) {
         console.log(response.data);
       }
@@ -52,12 +51,9 @@ function WordHistory({list}){
         console.log(`error : ${error.message}`);
     }
   };
-
+  
   useEffect(()=>{
     return() => {
-      console.log('History Component is closed');
-      console.log('save-checkedItems.length : ' + checkedItemsRef.current.length);
-      console.log('checkedItemsRef.current : '+checkedItemsRef.current);
       if( checkedItemsRef.current.length > 0 ) saveCheckedItems();
     }
   },[])
@@ -67,10 +63,10 @@ function WordHistory({list}){
           {Array.isArray(list) && list.length > 0 ? (
             list.map((history,index) => (
               <div key={index}>
+                <input type="checkbox" id={`checkbox${index}`} onChange={(e) => handleCheckboxChange(e, history)}/>
                 <label htmlFor={`checkbox${index}`}> 
                   {history.targetWord} - {history.translatedWord}
                 </label>
-                <input type="checkbox" id={`checkbox${index}`} onChange={(e) => handleCheckboxChange(e, history)}/>
               </div>
             ))
           ) : (

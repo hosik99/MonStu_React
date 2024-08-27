@@ -17,10 +17,11 @@ const TextArea = styled.div`
   font-size: 14px;
   display: flex;
   align-items: center;
+  opacity: 1; /* 투명도를 1로 설정 */
 `;
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function PopupBox({ text, position }) {
-  
+  console.log('POPUPBOX : text - {}, posiotion - {}',text,position);
   if (!position || !text) return null;
 
   return (

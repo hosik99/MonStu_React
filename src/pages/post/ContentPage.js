@@ -9,8 +9,6 @@ import {translationController} from "../../hooks/controller/translationControlle
 import {contentController} from "../../hooks/controller/contentController";
 import {validTranText,containSpace} from "../../hooks/method/translationVaild";
 import TextSelectionHandler from "./component/TextSelectionHandler";
-import MyWords from "./component/MyWords";
-import { Button } from "@mui/material";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
   display: flex;
@@ -55,11 +53,10 @@ function ContentPage() {
   const navigate = useNavigate();
 
   const { id } = useParams(); //content id
+  const numId = Number(id);
   const [content, setContent] = useState([]); 
-  const [myWordDTOList, setMyWordDTOList] = useState([]);
   const [historyOption,setHistoryOption] = useState(true);  //true shows 'wordsHistory' : false shows 'sentencesHistory'
   const [wordsHistory, setWordsHistory] = useState([]); //HIGHLIGHTED WORDS HISTORY
-  const [sentencesHistory, setSentencesHistory] = useState([]); //HIGHLIGHTED SENTENCES HISTORY
   const [selectText , setSelectText] = useState('');  //HIGHLIGHTED TEXT
   const [translatedText,setTranslatedText] = useState('');  
   const [popupBoxPosition, setPopupBoxPosition] = useState(null); // 팝업 위치
@@ -68,11 +65,7 @@ function ContentPage() {
   //ADD  NEW TRANSLATED TEXT TO HISTORY
   const addToHistory = (myWordId,targetText,newText) => {
     console.log('myWordId: '+myWordId+' targetText: '+targetText + ' newText: ' +newText);
-    console.log(containSpace(targetText));
-    !containSpace(targetText) ? 
-      setWordsHistory(prevHistory => [...prevHistory, {'myWordId':myWordId,'targetWord':targetText,'translatedWord':newText,'contentId':id}]):
-      setSentencesHistory(prevHistory => [...prevHistory, {'myWordId':myWordId,'targetWord':targetText,'translatedWord':newText,'contentId':id}]);
-    
+    setWordsHistory(prevHistory => [...prevHistory, {'myWordId':myWordId,'targetWord':targetText,'translatedWord':newText,'contentId':numId}]);
   };
 
   //REQUEST TO PAPAGO API
@@ -89,7 +82,6 @@ function ContentPage() {
         console.log(response.data);
         const result = response.data.message.result;
         setTranslatedText(result.translatedText);
-        console.log('Translated Text : ' + selectText);
         if( selectText!==result.translatedText) addToHistory(result.myWordId,selectText,result.translatedText); //번역 되었을 경우
       }
     } catch (error) {
@@ -101,12 +93,11 @@ function ContentPage() {
   const getContents = async () => {
 
     try {
-      const numericId = Number(id);
-      const response = await contentController(`/${numericId}`, 'get', null);
+      const response = await contentController(`/${numId}`, 'get', null);
       if (response && response.data) {
         setContent(response.data.contentDTO);
         console.log(response.data.myWordDTOList);
-        setMyWordDTOList(response.data.myWordDTOList ? response.data.myWordDTOList : "데이터가 없습니다");
+        setWordsHistory(response.data.myWordDTOList ? response.data.myWordDTOList : "데이터가 없습니다");
       } else if (response.status === 204) {
         alert('게시물이 없습니다.');
         navigate(-1); // 이전 페이지로 이동
@@ -141,10 +132,9 @@ function ContentPage() {
             active={historyOption}
             onClick={() => setHistoryOption(prev => !prev)}
           >
-            {historyOption ? 'Words' : 'Sentences'}
+            Words
           </SwitchButton>
-          {historyOption ? <WordHistory list={wordsHistory}/> : <WordHistory list={sentencesHistory}/>}
-          <MyWords myWordDTOList={myWordDTOList}></MyWords>
+          {historyOption ? <WordHistory list={wordsHistory}/> : null}
         </Words>
 
       </MainContent>
