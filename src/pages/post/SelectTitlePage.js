@@ -4,86 +4,123 @@ import { Link } from "react-router-dom";
 
 import Header from "../../components/Header";
 import AddContentModal from "./component/AddContentModal";
-import {contentController} from "../../hooks/controller/contentController";
+import { contentController } from "../../hooks/controller/contentController";
+
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
+  font-family: Arial, sans-serif;
 `;
 
 const ListContainer = styled.div`
-    flex: 1;
-    padding: 20px;
-    background-color: #b4b2d8; /* 회색 */
+  flex: 1;
+  padding: 20px;
+  background-color: #f5f5f5;
+  overflow-y: auto;
+`;
+
+const Title = styled.h1`
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
 `;
 
 const StyledLink = styled(Link)`
-    display: block; /* 링크가 전체 블록처럼 행동하게 합니다 */
-    background: #fff; /* 항목 배경 색상 */
-    margin: 5px 0;
-    padding: 15px; /* 패딩을 늘려서 링크의 클릭 영역을 확장 */
-    border-radius: 8px; /* 모서리를 더 둥글게 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
-    text-decoration: none; /* 링크의 기본 밑줄 제거 */
-    color: #333; /* 기본 글자 색상 */
-    font-size: 16px; /* 글자 크기 설정 */
-    font-weight: 500; /* 글자 두께 설정 */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* 배경색과 그림자 변화에 애니메이션 추가 */
-    
-    &:hover {
-        background-color: #f0f0f0; /* 마우스를 올렸을 때 배경색 변화 */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 마우스를 올렸을 때 그림자 증가 */
-    }
-    
-    &:active {
-        background-color: #e0e0e0; /* 클릭할 때 배경색 변화 */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 클릭 시 그림자 감소 */
-    }
+  display: block;
+  background: #ffffff;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  max-width: 100%; /* Prevent the box from growing too wide */
+  overflow: hidden; /* Hide text overflow */
+  text-overflow: ellipsis; /* Add ellipsis for overflow text */
+  white-space: nowrap; /* Prevent text wrapping */
+
+  &:hover {
+    background-color: #f9f9f9;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    background-color: #f0f0f0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 `;
-/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
-function SelectTitlePage(){
 
-    const [contents,setContents] = useState([]);
-    const [isEmpty,setIsEmpty] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const AddButton = styled.button`
+  margin: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 
-    const openModal = () => {setIsModalOpen(true);};
-    const closeModal = () => {setIsModalOpen(false);};
+  &:hover {
+    background-color: #0056b3;
+  }
 
-    useEffect (()=> {
-        
-        getContents();
-    },[]);
+  &:active {
+    transform: scale(0.98);
+  }
+`;
 
-    const getContents =async (e) => {
+function SelectTitlePage() {
+  const [contents, setContents] = useState([]);
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-      try {
-          const response = await contentController('/getContents','get',{});
-          if(response && response.data){
-              setContents(response.data.contentDTOList);
-          }else if(response.status === 204){   //검색되는 데이터가 없을때
-              setIsEmpty(true);
-          } 
-      } catch (error) {
-          if(error){ alert('데이터를 가져올 수 없습니다.'); }
+  const openModal = () => { setIsModalOpen(true); };
+  const closeModal = () => { setIsModalOpen(false); };
+
+  useEffect(() => {
+    getContents();
+  }, []);
+
+  const getContents = async () => {
+    try {
+      const response = await contentController('/getContents', 'get', {});
+      if (response && response.data) {
+        setContents(response.data.contentDTOList);
+      } else if (response.status === 204) {
+        setIsEmpty(true);
       }
-    };  
+    } catch (error) {
+      if (error) { alert('데이터를 가져올 수 없습니다.'); }
+    }
+  };
 
-    return (
-        <Container>
-          <Header/>
-            <button onClick={openModal}>Add New Content</button>
-            <AddContentModal closeModal={closeModal} isModalOpen={isModalOpen}/>
-            <ListContainer>
-                <ul>
-                    {contents.map((content) => (
-                        <StyledLink to={`/content/${content.contentId}`}>{content.title}</StyledLink>
-                    ))}
-                </ul>
-            </ListContainer>
-        </Container>
-    );
+  return (
+    <Container>
+      <Header />
+      <AddButton onClick={openModal}>Add New Content</AddButton>
+      <AddContentModal closeModal={closeModal} isModalOpen={isModalOpen} />
+      <ListContainer>
+        <Title>Content List</Title>
+        <ul>
+          {contents.map((content) => (
+            <li key={content.contentId} style={{ width: `${Math.min(content.title.length * 10, 300)}px` }}>
+              <StyledLink to={`/content/${content.contentId}`}>
+                {content.title}
+              </StyledLink>
+            </li>
+          ))}
+        </ul>
+        {isEmpty && <p>No content available</p>}
+      </ListContainer>
+    </Container>
+  );
 }
 
 export default SelectTitlePage;

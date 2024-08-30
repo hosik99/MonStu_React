@@ -6,6 +6,7 @@ import {myWordController} from "../../../hooks/controller/myWordController";
 const List = styled.div`
     flex: 1;
     padding: 20px;
+    width:20vw;
     background-color: #b4b2d8; /* 회색 */
 `;
 /*

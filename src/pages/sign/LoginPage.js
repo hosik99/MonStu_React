@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import LoadingPage from "../../components/LoadingPage";
 import {loginController} from "../../hooks/controller/loginController";
+import { containSpace, notNull } from "../../hooks/method/validation";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
     display: flex;
@@ -93,6 +94,7 @@ const ErrorMessage = styled.span`
 function LoginPage(){
 
     const navigate = useNavigate();
+    const [valid,setValid] = useState('');
     const [loading,setLoading] = useState(false);
 
     //FORM DATA STYLE
@@ -101,24 +103,27 @@ function LoginPage(){
         memberPw: '',
     });
 
-    //VAILDEING FORM DATA
-    const formVaild = () => {
-        if(formData.email==='') return true;
-        if(formData.memberPw==='') return true;
-    };
-
     //SAVE FORM DATA TO LOCAL
     const handleInputChange = (event) => {
         const {name,value} = event.target;
-        setFormData({
-            ...formData,
-            [name]:value.trim()
-        });
+        setFormData({ ...formData, [name]:value.trim()});
+        setValid('');
     };
+
+    const formDataValid = (data) => {
+        console.log('data: ',data);
+        if(containSpace(data.email) || !notNull(data.email))  return '이메일을 확인해 주세요.';
+        if(containSpace(data.memberPw) || !notNull(data.memberPw))  return '비밀번호를 확인해 주세요.';
+    }
 
     const saveData =async (e) => {
         e.preventDefault(); // 기본 폼 제출 방지
-        if(formVaild()) return alert("입력을 다시 확인해주세요");    //폼 데이터 유효성 검사
+        
+        const validError = formDataValid(formData);
+        if(validError){
+            setValid(validError);
+            return;
+        }
         
         try {
             setLoading(true);
@@ -126,10 +131,16 @@ function LoginPage(){
                 email: formData.email,
                 memberPw: formData.memberPw,
             });
-            localStorage.setItem('authToken', response.data.token);
+            localStorage.setItem('authToken', response.data.token); //Login Token setting
             navigate('/',{replace:true}); // 성공 후 메인 페이지로 이동
         } catch (error) {
-            alert('Login Error');
+            if (error.response && error.response.data) {
+                if (error.response.status === 401) {
+                    alert(error.response.data);
+                } 
+            } else {
+                alert('Login Error');
+            }
         }
         setLoading(false);
     };  
@@ -150,6 +161,7 @@ function LoginPage(){
                     <Label>Password: </Label>
                     <Input type="password" name="memberPw" value={formData.memberPw} onChange={handleInputChange} />
                 </FormGroup>
+                {valid && <ErrorMessage>{valid}</ErrorMessage>}
                 <Button type="submit">Login</Button>
                 <StyledLink to="/login/signup">sign up</StyledLink>
             </Form>
