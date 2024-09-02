@@ -16,7 +16,7 @@ function Content({ content, setWordsHistory, numId }) {
   const [selectText, setSelectText] = useState(""); // HIGHLIGHTED TEXT
   const [popupBoxPosition, setPopupBoxPosition] = useState(null); // 팝업 위치
   const [translatedText, setTranslatedText] = useState("");
-  const contentRef = useRef(null);
+  const contentRef = useRef(null);  //ref를 사용하면 이벤트 리스너가 정확히 해당 요소 내에서만 작동하도록 보장 가능
 
   // REQUEST TO PAPAGO API
   const translationWord = async (selectText) => {
@@ -58,7 +58,8 @@ function Content({ content, setWordsHistory, numId }) {
   useEffect(() => {
     const handleTextSelection = (event) => {
       if (contentRef.current && contentRef.current.contains(event.target)) {
-        // 현재 클릭이 contentRef 내부에서 발생했는지 확인
+        // 현재 클릭이 contentRef 내부에서 발생했는지 확인 (사용자가 텍스트를 선택한 영역이 StyledContent 내부인지 여부)
+        //contentRef.current -> DOM요소 (StyledContent), event.target -> 태그 요소
         TextSelectionHandler.setUpTextSelectionHandler(setSelectText, setPopupBoxPosition);
       }
     };
