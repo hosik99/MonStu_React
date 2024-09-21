@@ -10,6 +10,9 @@ import SignUpPage from './pages/sign/SignUpPage';
 import ContentPage from './pages/post/ContentPage';
 import SelectTitlePage from './pages/post/SelectTitlePage';
 import AdminPage from './pages/admin/AdminPage';
+import MyWordsPage from './pages/word/MyWordsPage';
+import MkStoryPage from './pages/word/MkStoryPage';
+import SelectPage from './pages/word/SelectPage';
 
 
 /*
@@ -26,7 +29,10 @@ function App() {
           <Route path="/login/signup" element={<SignUpPage />} /> {/*회원가입 페이지*/}
 
           <Route path="/content/:id" element={<ContentPage />} /> {/* 공부 메인 페이지 */}
-          <Route path="/select/title" element={<PrivateRoute><SelectTitlePage /></PrivateRoute>} /> {/* 게시물 선택 페이지 - 로그인 필요ㄴ*/}
+          <Route path="/title" element={<PrivateRoute><SelectTitlePage /></PrivateRoute>} /> {/* 게시물 선택 페이지 - 로그인 필요ㄴ*/}
+          <Route path="/words" element={<MyWordsPage />} /> {/* 즐겨찾기 단어 메인 페이지 */}
+          {/* <Route path="/api/story" element={<MkStoryPage />} /> 즐겨찾기 단어 메인 페이지 */}
+          <Route path="/aicon" element={<SelectPage />} /> {/* AI 게시물 선택 페이지 */}
 
           <Route path="/admin" element={<AdminPage />} /> {/* 관리자 페이지 */}
           <Route path='*' element={ <div>존재하지 않는 페이지</div> }/>

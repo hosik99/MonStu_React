@@ -33,8 +33,6 @@ const StyledLink = styled(Link)`
     margin: 10px;
     font-size: 18px;
     color: #fff;
-    background-color: #5bc0de; // Light blue color
-    border: 2px solid #46b8da;
     border-radius: 30px;
     text-decoration: none;
     text-align: center;
@@ -57,7 +55,9 @@ function Main(){
             <Header/>
             <StyledMain>
                 <StyledArticle>
-                    <StyledLink to="/select/title">MyContents</StyledLink>  {/*게시물*/}
+                    <StyledLink to="/title" style={{ backgroundColor: '#125B9A', border: '2px solid #FFBE98'}}>MyContents</StyledLink>  {/*게시물*/}
+                    <StyledLink to="/words" style={{ backgroundColor: '#F05A7E', border: '2px solid #FFBE98'}}>MyWords</StyledLink>  {/*게시물*/}
+                    <StyledLink to="/aicon" style={{ backgroundColor: '#F05A7E', border: '2px solid #FFBE98'}}>Study_MyWord</StyledLink>  {/*게시물*/}
                 </StyledArticle>
             </StyledMain>
             <Footer/>

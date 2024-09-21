@@ -18,12 +18,13 @@ const HeaderStyle = styled.header`
     }
 `;
 
-const Logo = styled.div`
+const Logo = styled(Link)`
     color: white;
     font-size: 20px;
     font-weight: bold;
     display: flex;
     justify-content: flex-start;
+    text-decoration: none;
 `;
 
 const Nav = styled.nav`
@@ -68,7 +69,7 @@ function Header() {
   
   return (
       <HeaderStyle>
-          <Logo>MONSTU</Logo>
+          <Logo to="/">MONSTU</Logo>
           <Nav>
               <ul>
                 <li><Link to="/about">About</Link></li>

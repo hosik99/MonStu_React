@@ -23,7 +23,7 @@ function Content({ content, setWordsHistory, numId }) {
     if (!validTranText(selectText)) return null; // Text가 영어인지 확인
 
     try {
-      const response = await translationController(`/translation`, "post", {
+      const response = await translationController(`/api/translation`, "post", {
         source: "en", // 원본 언어 (auto 사용시 자동으로 소스 감지)
         target: "ko", // 번역 될 언어 코드
         text: selectText, // 1회 최대 5,000자 까지

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-import {myWordController} from "../../../hooks/controller/myWordController";
+import {wordController} from "../../../hooks/controller/wordController";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const List = styled.div`
     flex: 1;
@@ -44,7 +44,7 @@ function WordHistory({list}){
       console.log('history items : {}',item);
     });
     try {
-      const response = await myWordController(`/save`, 'post', checkedItemsRef.current);
+      const response = await wordController(`/save`, 'post', checkedItemsRef.current);
       if (response && response.data) {
         console.log(response.data);
       }

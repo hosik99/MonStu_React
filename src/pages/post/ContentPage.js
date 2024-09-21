@@ -19,7 +19,7 @@ const MainContent = styled.div`
   flex: 1;
 `;
 
-const Words = styled.div`
+const StyledWords = styled.div`
   display: flex;
   flex-direction: column;
   position: relative; /* Relative positioning for child elements */
@@ -83,7 +83,7 @@ function ContentPage() {
         <Content content={content} setWordsHistory={setWordsHistory} numId={numId}/>
         
 
-        <Words historyOption={historyOption}>
+        <StyledWords historyOption={historyOption}>
           <SwitchButton
             active={historyOption}
             onClick={() => setHistoryOption(prev => !prev)}
@@ -91,7 +91,7 @@ function ContentPage() {
             Words
           </SwitchButton>
           {historyOption ? <WordHistory list={wordsHistory}/> : null}
-        </Words>
+        </StyledWords>
 
       </MainContent>
     </Container>
