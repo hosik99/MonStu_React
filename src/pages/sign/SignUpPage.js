@@ -2,8 +2,7 @@ import React, { useState,useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-import LoadingPage from "../../components/LoadingPage";
-import {signUpController} from "../../hooks/controller/signUpController";
+import {signUpController} from "../../hooks/api/controller/signUpController";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
     display: flex;
@@ -209,8 +208,6 @@ function SignUpPage(){
         }
         setLoading(false);
     };  
-
-    if(loading){return <LoadingPage/>}
 
     return(
         <Container>

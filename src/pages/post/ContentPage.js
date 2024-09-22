@@ -4,8 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "../../components/Header";
 import WordHistory from "./component/WordHistory";
-import {contentController} from "../../hooks/controller/contentController";
 import Content from "./component/Content";
+import { contentController } from "../../hooks/api/controller/contentController";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
   display: flex;

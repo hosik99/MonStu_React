@@ -1,4 +1,4 @@
-import { translationController } from "../../../hooks/controller/translationController";
+import { translationController } from "../../../hooks/api/controller/translationController";
 
 // Create New Story By Words ( Clova Studio API )
 export const getContentApi = async (wordList) => {

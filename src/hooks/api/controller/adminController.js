@@ -1,3 +1,3 @@
-import {connectSpring} from "../api/preAxios";
+import {connectSpring} from "../preAxios";
 
 export const adminController = () => connectSpring.get('/admin');

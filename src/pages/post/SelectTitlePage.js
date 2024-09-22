@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 
 import Header from "../../components/Header";
 import AddContentModal from "./component/AddContentModal";
-import { contentController } from "../../hooks/controller/contentController";
+import { contentController } from "../../hooks/api/controller/contentController";
+import MsgPopup from "../../components/popupBox/MsgPopup";
+
 
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
@@ -80,6 +82,7 @@ function SelectTitlePage() {
   const [contents, setContents] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [msg,setMsg] = useState('');
 
   const openModal = () => { setIsModalOpen(true); };
   const closeModal = () => { setIsModalOpen(false); };
@@ -105,7 +108,7 @@ function SelectTitlePage() {
     <Container>
       <Header />
       <AddButton onClick={openModal}>Add New Content</AddButton>
-      <AddContentModal closeModal={closeModal} isModalOpen={isModalOpen} />
+      <AddContentModal closeModal={closeModal} isModalOpen={isModalOpen} getContents={getContents} setMsg={setMsg}/>
       <ListContainer>
         <Title>Content List</Title>
         <ul>
@@ -119,6 +122,7 @@ function SelectTitlePage() {
         </ul>
         {isEmpty && <p>No content available</p>}
       </ListContainer>
+      <MsgPopup msg={msg}/>
     </Container>
   );
 }

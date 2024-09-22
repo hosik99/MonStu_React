@@ -1,12 +1,8 @@
 import React, { useState } from "react";
-import Modal from "react-modal";
 import styled from "styled-components";
-
-import LoadingPage from "../../../components/LoadingPage";
-import {contentController} from "../../../hooks/controller/contentController";
-import { useNavigate } from "react-router-dom";
+import {saveData} from "../../../hooks/api/controller/contentController";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
-const StyledModal = styled(Modal)`
+const StyledModal = styled.div`
     display: flex;
     flex-direction: column;
     /* align-items: center; */
@@ -67,48 +63,35 @@ const StyledButton = styled.button`
     }
 `;
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
-function AddContentModal(props){
+function AddContentModal( {closeModal,isModalOpen,getContents,setMsg} ){
 
-    const {closeModal,isModalOpen} = props;
-    const navigate = useNavigate();
     const [title,setTitle] = useState();
     const [content,setContent] = useState();
     
-    const [loading,setLoading] = useState(false);
-
     const handleTitle = (e) => {setTitle(e.target.value);}
     const handleContent = (e) => {setContent(e.target.value);}
 
-    const saveData =async (e) => {
-        e.preventDefault(); // 기본 폼 제출 방지
-        try {
-            setLoading(true);
-            const response = await contentController('/add','post',{
-                'title' : title,
-                'content' : content,
-            });
-            alert(response.data);
+    //after saving data
+    const handleSaveBtn = async (e) => {
+        const response = await saveData(title,content);
+        if(response.success){
             closeModal();
-            navigate(0); // 페이지를 새로고침
-        } catch (error) {
-            if(error && error.response.data){alert(error.response.data);}
+            getContents();  //새로고침
         }
-        setLoading(false);
-    };  
+        if(response.message) setMsg(response.message);
+    }
 
-    if(loading){return <LoadingPage/>}
+    if (!isModalOpen) return null;
 
     return(
-        <StyledModal isOpen={isModalOpen} contentLabel="Content Input Window">    {/* onRequestClose={closeModal} -> 창 꺼질떄 작동하는 메소드 */}
-            <form onSubmit={saveData}>
-                <ModalTitle>Add Content</ModalTitle>
-                <StyledText type="text" name="title" onChange={handleTitle} placeholder="Input Title Here" ></StyledText>
-                <StyledTextarea name="content" rows="15" cols="60" onChange={handleContent} placeholder="Content Here"></StyledTextarea>  {/*textarea가 화면크기를 변경해도 화면을 넘어가지 않게 CSS설정*/}
-                <div>
-                    <StyledButton type="submit">Save</StyledButton>
-                    <StyledButton type="button" onClick={closeModal}>Close</StyledButton>
-                </div>
-            </form>
+        <StyledModal isOpen={isModalOpen}>
+            <ModalTitle>Add Content</ModalTitle>
+            <StyledText type="text" onChange={handleTitle} placeholder="Input Title" required></StyledText>
+            <StyledTextarea rows="15" cols="60" onChange={handleContent} placeholder="Input Content" required></StyledTextarea>
+            <div>
+                <StyledButton onClick={handleSaveBtn}>Save</StyledButton>
+                <StyledButton onClick={closeModal}>Close</StyledButton>
+            </div>
         </StyledModal>
     );
 }

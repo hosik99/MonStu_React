@@ -1,4 +1,4 @@
-import { wordController } from "../../../hooks/controller/wordController";
+import { wordController } from "../../../hooks/api/controller/wordController";
 
 
 

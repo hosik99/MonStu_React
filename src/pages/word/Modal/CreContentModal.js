@@ -12,7 +12,6 @@ const CreContentModal = ({ closeModal,isModalOpen }) => {
     const [selList,setSelList] = useState([]);
     
     const handelSelect = (contentId, wordId, targetWord) => {
-        console.log('handelSelect  Worked');
         setSelList((prevSelList) => {   //prevDelList->원래의 목록
             const currentList = prevSelList[contentId] || [];
         

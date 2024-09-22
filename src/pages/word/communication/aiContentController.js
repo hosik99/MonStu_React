@@ -1,4 +1,4 @@
-import { aiContentController } from "../../../hooks/controller/aiContentController";
+import { aiContentController } from "../../../hooks/api/controller/aiContentController";
 
 //사용자의 모든 AiContent 가져오기
 export const getAllAiContent = async (setContentList) => {

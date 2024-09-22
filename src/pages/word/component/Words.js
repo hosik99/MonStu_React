@@ -1,7 +1,5 @@
-import { Button } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { wordController } from "../../../hooks/controller/wordController";
 
 const StyledWords = styled.div`
   padding: 20px;

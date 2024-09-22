@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 
-import LoadingPage from "../../components/LoadingPage";
-import {loginController} from "../../hooks/controller/loginController";
-import { containSpace, notNull } from "../../hooks/method/validation";
+import {loginController} from "../../hooks/api/controller/loginController";
+import { containSpace, notNull } from "../../hooks/util/validation";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
     display: flex;
@@ -144,8 +143,6 @@ function LoginPage(){
         }
         setLoading(false);
     };  
-
-    if(loading){return <LoadingPage/>}
 
     return(
         <Container>

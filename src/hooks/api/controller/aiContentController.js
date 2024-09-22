@@ -1,4 +1,4 @@
-import {connectSpring} from "../api/preAxios";
+import {connectSpring} from "../preAxios";
 
 export const aiContentController = (url,type='get',data=null) => {
 

@@ -1,4 +1,4 @@
-import {connectSpring} from "../api/preAxios";
+import {connectSpring} from "../preAxios";
 
 export const wordController = (url,type='get',data=null) => {
 
