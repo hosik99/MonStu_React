@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-import {wordController} from "../../../hooks/api/controller/wordController";
+import {saveHistoryWords, wordController} from "../../../hooks/api/controller/wordController";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const List = styled.div`
     flex: 1;
@@ -43,14 +43,8 @@ function WordHistory({list}){
     checkedItemsRef.current.forEach(item => {
       console.log('history items : {}',item);
     });
-    try {
-      const response = await wordController(`/save`, 'post', checkedItemsRef.current);
-      if (response && response.data) {
-        console.log(response.data);
-      }
-    } catch (error) {
-        console.log(`error : ${error.message}`);
-    }
+    const result = saveHistoryWords(checkedItemsRef.current);
+    result ? alert('즐겨찾기 단어가 저장되었습니다.') : alert('에러가 발생했습니다.');
   };
   
   useEffect(()=>{

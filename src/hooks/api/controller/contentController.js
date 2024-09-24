@@ -9,6 +9,7 @@ export const contentController = (url,type='get',data=null) => {
     if(type=='post') return connectSpring.post(baseUrl+url,data);
 }
 
+//save new content data
 export const saveData =async (title,content) => {
     try {
         const response = await contentController('/add','post',{
@@ -20,3 +21,14 @@ export const saveData =async (title,content) => {
         return errorStatus(error);
     }
 };  
+
+//REQUEST CONTENT DATA TO SPRING 
+export const getContent = async (id) => {
+    console.log('content_id: '+id);
+    try {
+        const response = await contentController(`/${id}`, 'get', null);
+        return responseStatus(response,response.data);
+    } catch (error) {
+        return errorStatus(error);
+    }
+};

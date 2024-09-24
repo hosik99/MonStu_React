@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import WordHistory from "./component/WordHistory";
 import Content from "./component/Content";
-import { contentController } from "../../hooks/api/controller/contentController";
+import { getContent } from "../../hooks/api/controller/contentController";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
   display: flex;
@@ -50,30 +50,22 @@ function ContentPage() {
   const [historyOption,setHistoryOption] = useState(true);  //true shows 'wordsHistory' : false shows 'sentencesHistory'
   const [wordsHistory, setWordsHistory] = useState([]); //HIGHLIGHTED WORDS HISTORY
   
- 
-
   //REQUEST CONTENT DATA TO SPRING 
-  const getContents = async () => {
-
-    try {
-      const response = await contentController(`/${numId}`, 'get', null);
-      if (response && response.data) {
-        setContent(response.data.contentDTO);
-        console.log(response.data.myWordDTOList);
-        setWordsHistory(response.data.myWordDTOList ? response.data.myWordDTOList : "데이터가 없습니다");
-      } else if (response.status === 204) {
-        alert('게시물이 없습니다.');
-        navigate(-1); // 이전 페이지로 이동
-      } 
-    } catch (error) {
-        alert("데이터를 가져올 수 없습니다.");
+  const fetchContent = async () => {
+    const result = await getContent(id);
+    if(!result.success){
+      alert('게시물이 없습니다.');
+      navigate(-1);
+      return  // 이전 페이지로 이동
     }
+    setContent(result.data.contentDTO);
+    setWordsHistory(result.data.myWordDTOList ? result.data.myWordDTOList : "No History");
   };
 
   //컴포넌트 실행 시 서버로 부터 content data를 받아옴
   //텍스트 하이라이팅 할 시 실행 할 함수 추가 (popupBox)
   useEffect(() => {
-    if (id) getContents(); // 페이지 접속 시 id를 넘겨 받았으면 서버로부터 데이터를 받아옴
+    if (id) fetchContent(); // 페이지 접속 시 id를 넘겨 받았으면 서버로부터 데이터를 받아옴
   }, [id]);
 
   return (
@@ -82,7 +74,6 @@ function ContentPage() {
       <MainContent>
         <Content content={content} setWordsHistory={setWordsHistory} numId={numId}/>
         
-
         <StyledWords historyOption={historyOption}>
           <SwitchButton
             active={historyOption}

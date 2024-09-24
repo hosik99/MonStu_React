@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { validTranText } from "../../../hooks/util/validation";
-import { translationController, translationWord } from "../../../hooks/api/controller/translationController";
 import PopupBox from "./PopupBox";
+import {translationWord} from "../../../hooks/api/controller/translationController";
 import TextSelectionHandler from "./TextSelectionHandler";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const StyledContent = styled.div`
@@ -28,10 +27,19 @@ function Content({ content, setWordsHistory, numId }) {
   };
 
   // Run translation function when selectText changes
-  useEffect(() => {
+  const fetchTranslation = async (selectText) => {
     if (selectText && selectText !== "") {
-      translationWord(selectText,setTranslatedText,addToHistory);
+        const result = await translationWord(selectText);
+        for(let key in result.data){
+          console.log(`${key} : ${result.data[key]}`);
+        }
+        setTranslatedText(result.data.translatedText);
+        if (selectText !== result.translatedText) addToHistory(result.data.myWordId, selectText, result.data.translatedText); // 번역 되었을 경우
     }
+  };
+
+  useEffect(() => {
+    fetchTranslation(selectText);
   }, [selectText]);
 
   useEffect(() => {
