@@ -9,7 +9,6 @@ function LogoutPage(){
     const navigate = useNavigate();
     
     const logout =async (e) => {
-
         localStorage.removeItem('authToken');
         navigate('/',{replace:true});
     };  

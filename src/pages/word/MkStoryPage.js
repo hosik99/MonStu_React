@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getWords } from "./communication/wordControllerC";
 import MkWords from "./component/MkWords";
 import AiContents from "./component/AiContents";
 import Words from "./component/Words";
+import { getWords } from "../../hooks/api/controller/wordController";
 
 function MkStoryPage(){
 

@@ -4,7 +4,8 @@ import Header from "../../components/Header";
 import Words from "./component/Words";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { delWords, getWords } from "./communication/wordControllerC";
+import { delWords, getWords } from "../../hooks/api/controller/wordController";
+import MsgPopup from "../../components/popupBox/MsgPopup";
 
 const Container = styled.div`
 
@@ -13,11 +14,9 @@ const Container = styled.div`
 
 function MyWordsPage() {
 
-    const navigate = useNavigate();
-
     const [words,setWords] = useState([]);
     const [selList,setSelList] = useState({});  //삭제할 목록 { contentID : [...wordsList] }
-
+    const [msg,setMsg] = useState('');
     
      const handelDelButton = (contentId,myWordId) => {
       setSelList((prevSelList) => {   //prevDelList->원래의 목록
@@ -39,24 +38,40 @@ function MyWordsPage() {
         });
       };
 
-      //if( delList.length > 0 )
+    const handleDelBtn = async (selList) => {
+      const result = await delWords(selList);
+      if(result.success){
+        setMsg(result.message);
+        refreshWords();
+      }else{
+        setMsg(result.message);
+      }
+    }
+
+    const refreshWords = async () => {
+      const result = await getWords();
+      if(result.success){
+        console.log(result.data);
+        setWords(result.data);
+      }else if(result.status===204){
+        setWords(null);
+      }else{
+        setWords(null);
+        alert(result.message);
+      }
+    }
+
+    //if( delList.length > 0 )
     useEffect(() => {
-      getWords(setWords);
+      refreshWords();
     },[]);     
-
-    useEffect(() => {
-        console.log("Words state updated:", words); // words 상태가 업데이트될 때 확인
-      }, [words]);
-
-    useEffect(() => {
-        console.log("Current selList state:", selList);
-    }, [selList]);
 
     return(
         <Container>
             <Header/>
-            <Button onClick={()=>{ delWords(selList); navigate(0); }}>Delete</Button>
+            <Button onClick={() => handleDelBtn(selList)}>Delete</Button>
             <Words words={words} selList={selList} handel={handelDelButton}></Words>
+            <MsgPopup msg={msg}/>
         </Container>
     );
 }

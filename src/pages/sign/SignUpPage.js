@@ -2,7 +2,8 @@ import React, { useState,useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-import {signUpController} from "../../hooks/api/controller/signUpController";
+import {checkEmail, save, sendEmailCheck, signUpController} from "../../hooks/api/controller/signUpController";
+import MsgPopup from "../../components/popupBox/MsgPopup";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
     display: flex;
@@ -12,7 +13,7 @@ const Container = styled.div`
     background-color: #f8f9fa;
 `;
 
-const Form = styled.form`
+const Form = styled.div`
     background: #fff;
     padding: 40px;
     border-radius: 10px;
@@ -110,8 +111,9 @@ function SignUpPage(){
     const [isEqualPw,setIsEqualPw] = useState(true);
     const [checkCode,setCheckCode] = useState('no code');   //Email checkCode
     const [isChecked,setIsChecked] = useState(false);       //is same emailcode? 
-    const [isExistsEmail,setIsExistsEmail] = useState(false);
-    const [loading,setLoading] = useState(false);
+    const [isExistsEmail,setIsExistsEmail] = useState(true);
+    const [msg,setMsg] = useState('');
+    const [msgId,setMsgId] = useState(0);
 
     //SAVE FORM DATA TO LOCAL
     const handleInputChange = (event) => {
@@ -127,7 +129,8 @@ function SignUpPage(){
         setIsEqualPw(formData.confirmPassword === formData.memberPw);
         setIsChecked(formData.emailCheck === checkCode);
     }, [
-        formData.confirmPassword, formData.memberPw,
+        formData.confirmPassword, 
+        formData.memberPw,
         formData.emailCheck
     ]);
 
@@ -141,86 +144,86 @@ function SignUpPage(){
         return null;
     };
 
-    //VERIFY EMAIL ALREADY EXISTS
-    const checkEmailExists =async (e) => {
+    // //VERIFY EMAIL ALREADY EXISTS
+    const checkEmailBtn = async () => {
         if(formData.email==='') return alert('이메일을 입력해 주세요.');
 
-        try {
-            const response = await signUpController(`/check?email=${encodeURIComponent(formData.email)}`,'post',{});
-            if(response && response.data){
-                setIsExistsEmail(true);
-                alert(response.data.message);
-            }
-        } catch (error) {
-            if (error.response) {
-                if (error.response.status === 409) {
-                    alert(error.response.data.message);
-                } else {
-                    alert('잠시 후 다시 시도해주세요.');
-                }
-            } else {
-                alert('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-            }
+        const result = await checkEmail(formData.email);
+        if(result.success){
+            setIsExistsEmail(false);
+            setMsg(result.message);
+        }else{
+            setIsExistsEmail(true);
+            setMsg(result.message);
         }
-    };  
+        setMsgId(msgId+1);
+    }
 
-    //SEND EMAIL CHECK CODE ,GET EMAIL CHECK CODE FROM SERVER
-    const sendEmailCheck =async (e) => {
+    const emailCheck = async () => {
         if(formData.email==='') return alert('이메일을 입력해 주세요.');
 
-        try {
-            const response = await signUpController('/emailcode?email='+formData.email,'post',{});
-            if(response && response.data){
-                setCheckCode(response.data.isSend);
-                alert('이메일을 확인해주세요.')
-            }
-        } catch (error) {
-            if(error){ alert('잠시 후 다시 시도해주세요.'); }
+        const result = await sendEmailCheck(formData.email);
+        if(result.success){
+            setCheckCode(result.data);
+            setMsg(result.message);
+        }else{
+            setMsg(result.message);
         }
-    };  
+    }
+
+    // //SENT FORM DATA TO SERVER
+    // const saveData =async (e) => {
+    //     // e.preventDefault(); // 기본 폼 제출 방지
+    //     let vaildMsg = formVaild();
+    //     if(vaildMsg) return alert(vaildMsg);    //폼 데이터 유효성 검사
+        
+    //     try {
+    //         const response = await signUpController('/signup','post',{
+    //             memberDTO: {
+    //                 email: formData.email,
+    //                 memberPw: formData.memberPw,
+    //             },
+    //             memberInfoDTO: {
+    //                 birth: new Date(formData.birth),
+    //                 country: formData.country,
+    //                 nickname: formData.nickname,
+    //             },
+    //         });
+    //         if(response && response.data){
+    //             alert(response.data);
+    //             navigate('/',{replace:true}); // 성공 후 메인 페이지로 이동
+    //         }
+            
+    //     } catch (error) {
+    //         if(error && error.response.data){alert(error.response.data);}
+    //     }
+    // };  
 
     //SENT FORM DATA TO SERVER
-    const saveData =async (e) => {
-        e.preventDefault(); // 기본 폼 제출 방지
+    const saveData = async () => {
         let vaildMsg = formVaild();
         if(vaildMsg) return alert(vaildMsg);    //폼 데이터 유효성 검사
         
-        try {
-            setLoading(true);
-            const response = await signUpController('/signup','post',{
-                memberDTO: {
-                    email: formData.email,
-                    memberPw: formData.memberPw,
-                },
-                memberInfoDTO: {
-                    birth: new Date(formData.birth),
-                    country: formData.country,
-                    nickname: formData.nickname,
-                },
-            });
-            if(response && response.data){
-                alert(response.data);
-                navigate('/',{replace:true}); // 성공 후 메인 페이지로 이동
-            }
-            
-        } catch (error) {
-            if(error && error.response.data){alert(error.response.data);}
+        const result = await save(formData);
+        if(result.success){
+            navigate('/',{replace:true}); // 성공 후 메인 페이지로 이동
+        }else{
+            setMsg(result.message);
         }
-        setLoading(false);
-    };  
+    }
 
     return(
         <Container>
-            <Form onSubmit={saveData}>
+            <Form>
                 <FormTitle>Sign Up</FormTitle>
                 <hr/>
                 <br/>
                 <FormGroup>
                     <Label>ID (email): </Label> 
                     <SubFormGroup>
-                        <Input type="email" name="email" value={formData.email} onChange={handleInputChange} />
-                        <SubButton type="button" onClick={checkEmailExists} disabled={isExistsEmail}>
-                        {isExistsEmail ? '✓' : 'Check'}
+                        <Input type="email" name="email" value={formData.email} onChange={handleInputChange} readOnly={!isExistsEmail}/>
+                        <SubButton onClick={checkEmailBtn} disabled={!isExistsEmail}>
+                        {!isExistsEmail ? '✓' : 'Check'}
                         </SubButton>
                     </SubFormGroup>
                 </FormGroup>
@@ -228,7 +231,7 @@ function SignUpPage(){
                     <Label>Email Authentication Code: </Label>
                     <SubFormGroup>
                         <Input type="text" name="emailCheck" value={formData.emailCheck} onChange={handleInputChange} />
-                        <SubButton type="button" onClick={sendEmailCheck}>Send</SubButton>
+                        <SubButton onClick={emailCheck}>Send</SubButton>
                     </SubFormGroup>
                 </FormGroup>
                 <FormGroup>
@@ -252,8 +255,9 @@ function SignUpPage(){
                     <Label>Nickname: </Label>
                     <Input type="text" name="nickname" value={formData.nickname} onChange={handleInputChange} />
                 </FormGroup>
-                <Button type="submit">Sign Up</Button>
+                <Button onClick={saveData}>Sign Up</Button>
             </Form>
+            <MsgPopup msg={msg} id={msgId}/>
         </Container>
     );
 }

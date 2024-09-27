@@ -36,12 +36,14 @@ const PopupContainer = styled.div`
   transition: opacity 0.5s ease-in-out;
 `;
 
-function MsgPopup({msg,time = 3000}) {
+/*
+  * Popup 창 반복적으로 띄우기
+      부모 컴포넌트에 setMsgId(msgId+1); 생성 후
+      <MsgPopup msg={msg} id={msgId}/>
+*/
+function MsgPopup({msg,time = 3000,id}) {
 
     const [isOpen,setIsOpen] = useState(false);
-
-    // const openPopup = () => { setIsOpen(true); }
-    // const closePopup = () => { setIsOpen(false); }
 
     useEffect(()=>{
             if(msg){
@@ -51,7 +53,7 @@ function MsgPopup({msg,time = 3000}) {
                             }, time);
                 return () => clearTimeout(timer);
             }
-    },[msg]);
+    },[msg,id]);
 
     if(!msg || !isOpen) return null;
 

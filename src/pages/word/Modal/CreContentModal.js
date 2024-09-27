@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { getWords } from "../communication/wordControllerC";
 import Words from "../component/Words";
-import { getContentApi } from "../communication/translationControllerC";
 import { useNavigate } from "react-router-dom";
+import { creAicon } from "../../../hooks/api/controller/aiContentController";
+import { getWords } from "../../../hooks/api/controller/wordController";
 
-const CreContentModal = ({ closeModal,isModalOpen }) => {
+const CreContentModal = ({ closeModal,isModalOpen,setMsg }) => {
 
     const navigate = useNavigate();
 
     const [words,setWords] = useState([]);
-    const [selList,setSelList] = useState([]);
+    const [selList,setSelList] = useState([]);  //선택된 단어 목록
     
     const handelSelect = (contentId, wordId, targetWord) => {
         setSelList((prevSelList) => {   //prevDelList->원래의 목록
@@ -31,10 +31,17 @@ const CreContentModal = ({ closeModal,isModalOpen }) => {
         });
     };
 
-    const actCreateBtn = () => {
-        let isSucces = getContentApi(selList);
-        isSucces ? closeModal() : alert('error');
-        navigate(0);
+    //CREATE NEW AI CONTENT BY WORDLIST
+    const actCreateBtn = async () => {
+        const result = await creAicon(selList);
+        if(result.success){
+            // const content = JSON.parse(result.data).result.message.content;
+            setMsg(result.message);
+            closeModal();
+            //새로고침
+        }else{
+            alert(result.message)
+        }
     }
 
     useEffect(() => {

@@ -78,7 +78,6 @@ function Words({ words,selList,handel }) {
       return acc;
   }, {});
 
-  
   /*
     Optional Chaining (?.)을 사용하여 안전하게 undefined 여부를 확인하고, undefined일 경우 includes 메서드를 호출하지 않습니다
   */

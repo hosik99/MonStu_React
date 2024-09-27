@@ -23,4 +23,4 @@ export const translationWord = async (selectText) => {
     }
 };
 
-  
+

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { delAiContent, getAllAiContent } from "../communication/aiContentController";
 import { useNavigate } from "react-router-dom";
+import { del } from "../../../hooks/api/controller/aiContentController";
+import MsgPopup from "../../../components/popupBox/MsgPopup";
 
 // Container 스타일링
 const Container = styled.div`
@@ -42,14 +43,18 @@ const DelButton = styled.button`
 
 `
 
-function AiContents({ contentList}) {
+function AiContents({ contentList,setMsg,handleMsgId,refreshAiContent}) {
 
-    const navigate = useNavigate();
-
-    const handleDelBtn = (id) => {
-        delAiContent(id);
-        navigate(0);
-    }
+    //하나의 AiContent 삭제
+    const handleDelBtn = async (id) => {
+        const response = await del(id);
+        if(response.success){
+            refreshAiContent();
+        }else{
+            setMsg(response.message);
+        }
+        handleMsgId();
+    };
 
     return (
         <Container>

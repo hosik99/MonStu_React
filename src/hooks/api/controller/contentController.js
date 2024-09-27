@@ -32,3 +32,13 @@ export const getContent = async (id) => {
         return errorStatus(error);
     }
 };
+
+//Get All Contents Data By User Email
+export const getContents = async () => {
+    try {
+      const response = await contentController('/getContents', 'get', {});
+      return responseStatus(response,response.data);
+    } catch (error) {
+      return errorStatus(error);
+    }
+  };

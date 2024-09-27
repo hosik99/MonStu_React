@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 
-import {loginController} from "../../hooks/api/controller/loginController";
+import {loginController, save} from "../../hooks/api/controller/loginController";
 import { containSpace, notNull } from "../../hooks/util/validation";
+import MsgPopup from "../../components/popupBox/MsgPopup";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
     display: flex;
@@ -13,7 +14,7 @@ const Container = styled.div`
     background-color: #f8f9fa;
 `;
 
-const Form = styled.form`
+const Form = styled.div`
     background: #fff;
     padding: 40px;
     border-radius: 10px;
@@ -94,7 +95,7 @@ function LoginPage(){
 
     const navigate = useNavigate();
     const [valid,setValid] = useState('');
-    const [loading,setLoading] = useState(false);
+    const [msg,setMsg] = useState('');
 
     //FORM DATA STYLE
     const [formData,setFormData] = useState({
@@ -115,38 +116,23 @@ function LoginPage(){
         if(containSpace(data.memberPw) || !notNull(data.memberPw))  return '비밀번호를 확인해 주세요.';
     }
 
-    const saveData =async (e) => {
-        e.preventDefault(); // 기본 폼 제출 방지
-        
+    const saveData = async () => {
         const validError = formDataValid(formData);
         if(validError){
             setValid(validError);
             return;
         }
-        
-        try {
-            setLoading(true);
-            const response = await loginController('/login','post',{
-                email: formData.email,
-                memberPw: formData.memberPw,
-            });
-            localStorage.setItem('authToken', response.data.token); //Login Token setting
+        const result = await save(formData.email,formData.memberPw);
+        if(result.success){
             navigate('/',{replace:true}); // 성공 후 메인 페이지로 이동
-        } catch (error) {
-            if (error.response && error.response.data) {
-                if (error.response.status === 401) {
-                    alert(error.response.data);
-                } 
-            } else {
-                alert('Login Error');
-            }
+        }else{
+            setMsg(result.message);
         }
-        setLoading(false);
-    };  
+    }
 
     return(
         <Container>
-            <Form onSubmit={saveData}>
+            <Form>
                 <FormTitle>Login Page</FormTitle>
                 <hr/>
                 <br/>
@@ -159,8 +145,9 @@ function LoginPage(){
                     <Input type="password" name="memberPw" value={formData.memberPw} onChange={handleInputChange} />
                 </FormGroup>
                 {valid && <ErrorMessage>{valid}</ErrorMessage>}
-                <Button type="submit">Login</Button>
+                <Button onClick={saveData}>Login</Button>
                 <StyledLink to="/login/signup">sign up</StyledLink>
+                <MsgPopup msg={msg}/>
             </Form>
         </Container>
     );

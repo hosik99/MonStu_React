@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import Header from "../../components/Header";
 import AddContentModal from "./component/AddContentModal";
-import { contentController } from "../../hooks/api/controller/contentController";
+import { getContents } from "../../hooks/api/controller/contentController";
 import MsgPopup from "../../components/popupBox/MsgPopup";
 
 
@@ -88,19 +88,17 @@ function SelectTitlePage() {
   const closeModal = () => { setIsModalOpen(false); };
 
   useEffect(() => {
-    getContents();
+    fetchContents();
   }, []);
 
-  const getContents = async () => {
-    try {
-      const response = await contentController('/getContents', 'get', {});
-      if (response && response.data) {
-        setContents(response.data.contentDTOList);
-      } else if (response.status === 204) {
-        setIsEmpty(true);
-      }
-    } catch (error) {
-      if (error) { alert('데이터를 가져올 수 없습니다.'); }
+  //REQUEST CONTENT DATA TO SPRING 
+  const fetchContents = async () => {
+    const result = await getContents();
+    if(result.success){
+      setContents(result.data?.contentDTOList);
+      if(result.data) setIsEmpty(false);
+    }else{
+      setIsEmpty(true);
     }
   };
 
