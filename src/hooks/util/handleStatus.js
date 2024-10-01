@@ -4,7 +4,7 @@
     console.log('message: '+result.message);
 */
 
-//Handle Response Status
+//Handle Response
 export function responseStatus(response,data=null){
 
     let result = { success : false, message : 'No Response'};
@@ -43,7 +43,7 @@ export function responseStatus(response,data=null){
             };
             break; 
     }
-    return addData(result,data);;
+    return addData(result,data);
 }
 
 //Handle Response Error Status

@@ -71,12 +71,12 @@ function AddContentModal( {closeModal,isModalOpen,getContents,setMsg} ){
     const handleTitle = (e) => {setTitle(e.target.value);}
     const handleContent = (e) => {setContent(e.target.value);}
 
-    //after saving data
+    //after save data
     const handleSaveBtn = async (e) => {
         const response = await saveData(title,content);
         if(response.success){
             closeModal();
-            getContents();  //새로고침
+            getContents();  //Refresh
         }
         if(response.message) setMsg(response.message);
     }

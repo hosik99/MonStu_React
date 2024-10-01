@@ -4,7 +4,7 @@ import CreContentModal from "./Modal/CreContentModal";
 import { Button } from "@mui/material";
 import AiContents from "./component/AiContents";
 import MsgPopup from "../../components/popupBox/MsgPopup";
-import { getAllAiContent } from "../../hooks/api/controller/aiContentController";
+import { getAll } from "../../hooks/api/controller/aiContentController";
 
 const Container = styled.div`
 
@@ -25,7 +25,7 @@ function SelectPage(){
     }
 
     const refreshAiContent = async () => {
-        const result = await getAllAiContent();
+        const result = await getAll();
         if(result.success){
             setContentList(result.data);
         }else{

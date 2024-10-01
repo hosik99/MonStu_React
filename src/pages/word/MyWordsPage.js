@@ -3,8 +3,7 @@ import styled from "styled-components";
 import Header from "../../components/Header";
 import Words from "./component/Words";
 import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { delWords, getWords } from "../../hooks/api/controller/wordController";
+import { del, getAll } from "../../hooks/api/controller/wordController";
 import MsgPopup from "../../components/popupBox/MsgPopup";
 
 const Container = styled.div`
@@ -39,7 +38,7 @@ function MyWordsPage() {
       };
 
     const handleDelBtn = async (selList) => {
-      const result = await delWords(selList);
+      const result = await del(selList);
       if(result.success){
         setMsg(result.message);
         refreshWords();
@@ -49,7 +48,7 @@ function MyWordsPage() {
     }
 
     const refreshWords = async () => {
-      const result = await getWords();
+      const result = await getAll();
       if(result.success){
         console.log(result.data);
         setWords(result.data);

@@ -1,7 +1,7 @@
 import {connectSpring} from "../preAxios";
 import {responseStatus,errorStatus} from "../../util/handleStatus";
 
-export const contentController = (url,type='get',data=null) => {
+const contentController = (url,type='get',data=null) => {
     
     const baseUrl = '/member/content';
 
@@ -24,7 +24,6 @@ export const saveData =async (title,content) => {
 
 //REQUEST CONTENT DATA TO SPRING 
 export const getContent = async (id) => {
-    console.log('content_id: '+id);
     try {
         const response = await contentController(`/${id}`, 'get', null);
         return responseStatus(response,response.data);

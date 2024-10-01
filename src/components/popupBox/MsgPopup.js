@@ -1,45 +1,77 @@
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
+// 팝업 나타나는 애니메이션
 const fadeIn = keyframes`
   from {
     opacity: 0;
+    transform: translateY(20px);  // 살짝 아래서 위로 올라오도록
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 `;
 
+// 팝업 사라지는 애니메이션
 const fadeOut = keyframes`
   from {
     opacity: 1;
+    transform: translateY(0);
   }
   to {
     opacity: 0;
+    transform: translateY(20px);  // 사라질 때 아래로 내려가듯이
   }
 `;
 
 // 팝업 컨테이너 스타일
 const PopupContainer = styled.div`
   position: fixed;
-  bottom: 20px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #333;
   color: #fff;
   padding: 15px 25px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   z-index: 1000;
   opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
-  animation: ${({ isOpen }) => (isOpen ? fadeIn : fadeOut)} 0.5s forwards;
-  transition: opacity 0.5s ease-in-out;
+  animation: ${({ isOpen }) => (isOpen ? fadeIn : fadeOut)} 0.6s forwards;
+  transition: opacity 0.6s ease-in-out;
+  font-size: 16px;  // 폰트 크기
+  font-weight: 500; // 폰트 두께
+  text-align: center;
+  max-width: 80%;    // 화면에서 너무 커지지 않도록 제한
+  min-width: 250px;
+`;
+
+// 닫기 버튼 스타일
+const CloseBtn = styled.button`
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+
+  &:hover {
+    color: #f00;  // 호버 시 빨간색으로 변하게
+  }
 `;
 
 /*
-  * Popup 창 반복적으로 띄우기
+  짧은 메세지를 특정 시간 동안 화면 중앙 하단에 표시합니다.
+*/
+/*
+  id 파라미터를 이용해서 Popup 창 반복적으로 띄우기
       부모 컴포넌트에 setMsgId(msgId+1); 생성 후
-      <MsgPopup msg={msg} id={msgId}/>
+      <MsgPopup msg={msg} id={msgId}/> 세팅
 */
 function MsgPopup({msg,time = 3000,id}) {
 
@@ -57,7 +89,12 @@ function MsgPopup({msg,time = 3000,id}) {
 
     if(!msg || !isOpen) return null;
 
-    return <PopupContainer isOpen={isOpen}>{msg}</PopupContainer> ;
+    return (
+      <PopupContainer isOpen={isOpen}>
+        {msg}
+        <CloseBtn onClick={()=>setIsOpen(false)}>X</CloseBtn>
+      </PopupContainer>
+    )
 }
 
 export default MsgPopup;

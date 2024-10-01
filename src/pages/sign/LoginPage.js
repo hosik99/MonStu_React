@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 
-import {loginController, save} from "../../hooks/api/controller/loginController";
+import { login } from "../../hooks/api/controller/loginController";
 import { containSpace, notNull } from "../../hooks/util/validation";
 import MsgPopup from "../../components/popupBox/MsgPopup";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
@@ -122,7 +122,7 @@ function LoginPage(){
             setValid(validError);
             return;
         }
-        const result = await save(formData.email,formData.memberPw);
+        const result = await login(formData.email,formData.memberPw);
         if(result.success){
             navigate('/',{replace:true}); // 성공 후 메인 페이지로 이동
         }else{

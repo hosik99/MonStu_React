@@ -1,6 +1,6 @@
 
 //영어 문자열 확인
-export function validTranText(text){
+export function isEng(text){
     if(typeof text !== 'string' && text !== null) return false;
     const eng_regex = /[a-zA-Z]/;   //RegExp 객체
     return eng_regex.test(text);

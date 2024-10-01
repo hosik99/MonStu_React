@@ -12,9 +12,11 @@ const StyledContent = styled.div`
 `;
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 function Content({ content, setWordsHistory, numId }) {
+
   const [selectText, setSelectText] = useState(""); // HIGHLIGHTED TEXT
   const [popupBoxPosition, setPopupBoxPosition] = useState(null); // 팝업 위치
   const [translatedText, setTranslatedText] = useState("");
+  
   const contentRef = useRef(null);  //ref를 사용하면 이벤트 리스너가 정확히 해당 요소 내에서만 작동하도록 보장 가능
 
   // ADD NEW TRANSLATED TEXT TO HISTORY

@@ -1,7 +1,7 @@
 import {responseStatus,errorStatus} from "../../util/handleStatus";
 import {connectSpring} from "../preAxios";
 
-export const translationController = (url,type='get',data=null) => {
+const translationController = (url,type='get',data=null) => {
 
     const baseUrl = '/tr';
 

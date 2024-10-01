@@ -1,7 +1,7 @@
 import { errorStatus, responseStatus } from "../../util/handleStatus";
 import {connectSpring} from "../preAxios";
 
-export const aiContentController = (url,type='get',data=null) => {
+const aiContentController = (url,type='get',data=null) => {
 
     const baseUrl = '/member/aicon';
 
@@ -9,7 +9,7 @@ export const aiContentController = (url,type='get',data=null) => {
     if(type==='post') return connectSpring.post(baseUrl+url,data);
 }
 
-//하나의 AiContent 삭제
+//DELETE AiContent
 export const del = async (id) => {
     try {
         const response = await aiContentController(`/del`, 'post',id);
@@ -19,7 +19,8 @@ export const del = async (id) => {
     }     
 };
 
-export const creAicon = async (wordList) => {
+//CREATE NEW CONTENT BY AI
+export const cre = async (wordList) => {
     try {
         const response = await aiContentController(`/api/con`, 'post',wordList);
         return responseStatus(response,response.data.apiResponse);
@@ -28,8 +29,8 @@ export const creAicon = async (wordList) => {
     }     
 };
 
-//사용자의 모든 AiContent 가져오기
-export const getAllAiContent = async () => {
+//GET ALL AI CONTENT USING MEMBER ID
+export const getAll = async () => {
     try {
         const response = await aiContentController(`/getAll`, 'get',null);
         return responseStatus(response,response.data.aiContentDTOList);

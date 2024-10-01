@@ -1,7 +1,7 @@
 import { errorStatus, responseStatus } from "../../util/handleStatus";
 import {connectSpring} from "../preAxios";
 
-export const signUpController = (url,type='get',data=null) => {
+const signUpController = (url,type='get',data=null) => {
 
     const baseUrl = '/sign';
 

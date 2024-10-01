@@ -1,7 +1,7 @@
 import { errorStatus, responseStatus } from "../../util/handleStatus";
 import {connectSpring} from "../preAxios";
 
-export const wordController = (url,type='get',data=null) => {
+const wordController = (url,type='get',data=null) => {
 
     const baseUrl = '/member/word';
 
@@ -9,6 +9,7 @@ export const wordController = (url,type='get',data=null) => {
     if(type=='post') return connectSpring.post(baseUrl+url,data);
 }
 
+//SAVE HISTORY WORDS
 export const saveHistoryWords = async (list) => {
     try {
         const response = await wordController(`/save`, 'post', list);
@@ -18,7 +19,8 @@ export const saveHistoryWords = async (list) => {
     }
 }
 
-export const getWords = async () => {
+//GET ALL HISTORY WORDS BY MEMBER ID
+export const getAll = async () => {
     try {
         const response = await wordController(`/my`, 'get', null);
         return responseStatus(response,response.data);
@@ -27,7 +29,8 @@ export const getWords = async () => {
     }
 };
 
-export const delWords = async (delList) => {
+//DELETE WORDS
+export const del = async (delList) => {
     try {
         const response = await wordController(`/del`, 'post',delList);
         return responseStatus(response);

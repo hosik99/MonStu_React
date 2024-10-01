@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Words from "../component/Words";
 import { useNavigate } from "react-router-dom";
-import { creAicon } from "../../../hooks/api/controller/aiContentController";
-import { getWords } from "../../../hooks/api/controller/wordController";
+import { cre } from "../../../hooks/api/controller/aiContentController";
+import { getAll } from "../../../hooks/api/controller/wordController";
 
 const CreContentModal = ({ closeModal,isModalOpen,setMsg }) => {
 
@@ -33,7 +33,7 @@ const CreContentModal = ({ closeModal,isModalOpen,setMsg }) => {
 
     //CREATE NEW AI CONTENT BY WORDLIST
     const actCreateBtn = async () => {
-        const result = await creAicon(selList);
+        const result = await cre(selList);
         if(result.success){
             // const content = JSON.parse(result.data).result.message.content;
             setMsg(result.message);
@@ -45,7 +45,7 @@ const CreContentModal = ({ closeModal,isModalOpen,setMsg }) => {
     }
 
     useEffect(() => {
-        getWords(setWords);
+        getAll(setWords);
     },[]);
 
     useEffect(() => {
