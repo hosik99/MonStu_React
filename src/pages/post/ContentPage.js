@@ -72,7 +72,7 @@ function ContentPage() {
     <Container>
       <Header />
       <MainContent>
-        <Content content={content} setWordsHistory={setWordsHistory} numId={numId}/>
+        <Content content={content} setWordsHistory={setWordsHistory} wordsHistory={wordsHistory} numId={numId} />
         
         <StyledWords historyOption={historyOption}>
           <SwitchButton

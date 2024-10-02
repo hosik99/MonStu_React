@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import PopupBox from "./PopupBox";
-import {translationWord} from "../../../hooks/api/controller/translationController";
-import TextSelectionHandler from "./TextSelectionHandler";
+import { trans } from "../../../hooks/api/controller/translationController";
+import { sensing } from "../../../hooks/util/validation";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const StyledContent = styled.div`
   flex: 1;
@@ -11,61 +11,84 @@ const StyledContent = styled.div`
   height: 100vh;
 `;
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
-function Content({ content, setWordsHistory, numId }) {
-
+function Content({ content, setWordsHistory, wordsHistory, numId }) {
   const [selectText, setSelectText] = useState(""); // HIGHLIGHTED TEXT
   const [popupBoxPosition, setPopupBoxPosition] = useState(null); // 팝업 위치
   const [translatedText, setTranslatedText] = useState("");
-  
-  const contentRef = useRef(null);  //ref를 사용하면 이벤트 리스너가 정확히 해당 요소 내에서만 작동하도록 보장 가능
+  const [option, setOption] = useState({
+    source: 'en',  // 원본 언어
+    target: 'ko',  // 번역될 언어
+  });
 
-  // ADD NEW TRANSLATED TEXT TO HISTORY
-  const addToHistory = (myWordId, targetText, newText) => {
-    console.log("myWordId: " + myWordId + " targetText: " + targetText + " newText: " + newText);
-    setWordsHistory((prevHistory) => [
-      ...prevHistory,
-      { myWordId: myWordId, targetWord: targetText, translatedWord: newText, contentId: numId },
-    ]);
-  };
+  const contentRef = useRef(null);  // Content 영역을 참조하는 ref
 
-  // Run translation function when selectText changes
-  const fetchTranslation = async (selectText) => {
-    if (selectText && selectText !== "") {
-        const result = await translationWord(selectText);
-        for(let key in result.data){
-          console.log(`${key} : ${result.data[key]}`);
-        }
-        setTranslatedText(result.data.translatedText);
-        if (selectText !== result.translatedText) addToHistory(result.data.myWordId, selectText, result.data.translatedText); // 번역 되었을 경우
-    }
-  };
-
-  useEffect(() => {
-    fetchTranslation(selectText);
-  }, [selectText]);
-
-  useEffect(() => {
-    const handleTextSelection = (event) => {
-      if (contentRef.current && contentRef.current.contains(event.target)) {
-        // 현재 클릭이 contentRef 내부에서 발생했는지 확인 (사용자가 텍스트를 선택한 영역이 StyledContent 내부인지 여부)
-        //contentRef.current -> DOM요소 (StyledContent), event.target -> 태그 요소
-        TextSelectionHandler.setUpTextSelectionHandler(setSelectText, setPopupBoxPosition);
+  // 번역 요청 및 히스토리 추가 함수
+  const fetchTranslation = async (text) => {
+    const result = await trans(text, option);
+    if (result.success) {
+      setTranslatedText(result.data.translatedText);
+      if (text !== result.data.translatedText) {
+        setWordsHistory((prevHistory) => [
+          ...prevHistory,
+          { myWordId: result.data.myWordId, targetWord: text, translatedWord: result.data.translatedText, contentId: numId },
+        ]);
       }
-    };
-
-    // contentRef가 유효할 때만 이벤트 리스너 추가
-    if (contentRef.current) {
-      contentRef.current.addEventListener("mouseup", handleTextSelection);
+    } else {
+      alert(result.message);
     }
+  };
+
+  // 텍스트 선택 핸들러 설정
+  const handleTextSelection = (event) => {
+    if (contentRef.current && contentRef.current.contains(event.target)) {
+      const selection = window.getSelection();  //selection 객체
+      const selectedText = selection.toString().trim();
+
+      if (selectedText) {
+        setSelectText(selectedText);
+
+        // 선택한 텍스트의 위치를 기반으로 팝업 위치 설정
+        const range = selection.getRangeAt(0);  //사용자가 선택한 첫 번째 텍스트 범위를 나타내는 Range 객체를 가져옴
+        const rect = range.getBoundingClientRect(); //선택된 텍스트 영역의 위치와 크기를 포함한 DOMRect 객체 반환 (top, left, right, bottom, width, height 등의 정보)
+        setPopupBoxPosition({
+          top: rect.top + window.scrollY - 30,  //window.scroll -> 마우스 스크롤 크기, recr -> 선택된 텍스트 영역의 좌표
+          left: rect.left + window.scrollX + rect.width / 3,  // 텍스트의 가로위치
+        });
+      } else {
+        setPopupBoxPosition(null);
+      }
+    }
+  };
+
+  // 이벤트 리스너 추가 및 제거
+  useEffect(() => {
+    // mouseup 이벤트 시 텍스트 선택 감지
+    document.addEventListener("mouseup", handleTextSelection);
 
     return () => {
-      // contentRef가 유효할 때만 이벤트 리스너 제거
-      if (contentRef.current) {
-        contentRef.current.removeEventListener("mouseup", handleTextSelection);
-      }
-      TextSelectionHandler.cleanupTextSelectionHandler();
+      // 컴포넌트 언마운트 시 이벤트 리스너 제거
+      document.removeEventListener("mouseup", handleTextSelection);
     };
   }, []);
+
+  const scanHistory = () =>{
+    if(!wordsHistory) return false;
+    for(let word of wordsHistory){
+      console.log('word: '+ word.targetWord );
+      if(word.targetWord === selectText){
+        setTranslatedText(word.translatedWord);
+        console.log('translatedWord-same');
+        return true;
+      }
+    }
+    return false;
+  }
+
+  useEffect(() => {
+    if (sensing(selectText, option.source)) {
+      if(!scanHistory()) fetchTranslation(selectText); 
+    }
+  }, [selectText]);
 
   return (
     <div>

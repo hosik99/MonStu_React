@@ -10,11 +10,11 @@ const translationController = (url,type='get',data=null) => {
 }
 
 //REQUEST TO PAPAGO API
-export const translationWord = async (selectText) => {
+export const trans = async (selectText,option) => {
     try {
         const response = await translationController(`/api/translation`, "post", {
-            source: "en", // 원본 언어 (auto 사용시 자동으로 소스 감지)
-            target: "ko", // 번역 될 언어 코드
+            source: option.source, 
+            target: option.target, 
             text: selectText, // 1회 최대 5,000자 까지
         });
         return responseStatus(response,response.data.message.result);
