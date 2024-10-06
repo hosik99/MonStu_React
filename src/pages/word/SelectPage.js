@@ -5,6 +5,7 @@ import { Button } from "@mui/material";
 import AiContents from "./component/AiContents";
 import MsgPopup from "../../components/popupBox/MsgPopup";
 import { getAll } from "../../hooks/api/controller/aiContentController";
+import Header from "../../components/Header";
 
 const Container = styled.div`
 
@@ -37,12 +38,16 @@ function SelectPage(){
         refreshAiContent();
     },[]);
 
+    
+
     useEffect(() => {
         console.log('contentList: '+contentList);
     },[contentList]);
 
     return(
         <Container>
+            <Header/>
+
             <Button onClick={openModal}>Create New Stroy</Button>
             <CreContentModal closeModal={closeModal} isModalOpen={isModalOpen} setMsg={setMsg}/>
 

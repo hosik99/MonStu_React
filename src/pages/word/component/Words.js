@@ -7,6 +7,9 @@ const StyledWords = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
+  max-height: 300px; /* 원하는 높이를 설정 */
+  overflow-y: auto;  /* 세로 스크롤 활성화 */
+fv
   h3 {
     font-size: 1.5rem;
     color: #333;

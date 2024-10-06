@@ -50,7 +50,6 @@ function MyWordsPage() {
     const refreshWords = async () => {
       const result = await getAll();
       if(result.success){
-        console.log(result.data);
         setWords(result.data);
       }else if(result.status===204){
         setWords(null);
