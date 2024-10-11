@@ -2,14 +2,15 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledWords = styled.div`
+  flex-grow: 1; /* 남은 공간을 채우기 위해 flex-grow 사용 */
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-  max-height: 300px; /* 원하는 높이를 설정 */
+  max-height: 100%; /* 부모 요소의 최대 높이에 맞춤 */
   overflow-y: auto;  /* 세로 스크롤 활성화 */
-fv
+
   h3 {
     font-size: 1.5rem;
     color: #333;
@@ -39,7 +40,6 @@ fv
     }
   }
 
-  /* 모바일 화면에서의 스타일 */
   @media (max-width: 768px) {
     padding: 10px;
     
@@ -94,8 +94,8 @@ function Words({ words,selList,handel }) {
                           <li key={word.myWordId}>
                               {word.targetWord} - {word.translatedWord}
                               <CheckButton 
-                                active={selList[word.contentId]?.includes(word.myWordId)}
-                                onClick={() => handel(word.contentId,word.myWordId,word.targetWord)}
+                                active={selList[word.contentId]?.includes(word)}
+                                onClick={() => handel(word)}
                               >
                                 Check
                               </CheckButton>

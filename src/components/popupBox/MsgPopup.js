@@ -68,11 +68,6 @@ const CloseBtn = styled.button`
 /*
   짧은 메세지를 특정 시간 동안 화면 중앙 하단에 표시합니다.
 */
-/*
-  id 파라미터를 이용해서 Popup 창 반복적으로 띄우기
-      부모 컴포넌트에 setMsgId(msgId+1); 생성 후
-      <MsgPopup msg={msg} id={msgId}/> 세팅
-*/
 function MsgPopup({msg,time = 3000,id}) {
 
     const [isOpen,setIsOpen] = useState(false);

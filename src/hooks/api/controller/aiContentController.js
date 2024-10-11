@@ -22,6 +22,7 @@ export const del = async (id) => {
 //CREATE NEW CONTENT BY AI
 export const cre = async (wordList) => {
     try {
+        console.log('wordList: '+wordList.toString());
         const response = await aiContentController(`/api/con`, 'post',wordList);
         return responseStatus(response,response.data.apiResponse);
     }catch(error){

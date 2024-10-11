@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import {checkEmail, save, sendEmailCheck, signUpController} from "../../hooks/api/controller/signUpController";
 import MsgPopup from "../../components/popupBox/MsgPopup";
+import { isEmail } from "../../hooks/util/validation";
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 const Container = styled.div`
     display: flex;
@@ -111,6 +112,7 @@ function SignUpPage(){
     const [isEqualPw,setIsEqualPw] = useState(true);
     const [checkCode,setCheckCode] = useState('no code');   //Email checkCode
     const [isChecked,setIsChecked] = useState(false);       //is same emailcode? 
+    const [checkedEmail,setCheckedEmail] = useState(false);       //is same emailcode? 
     const [isExistsEmail,setIsExistsEmail] = useState(true);
     const [msg,setMsg] = useState('');
     const [msgId,setMsgId] = useState(0);
@@ -147,20 +149,23 @@ function SignUpPage(){
     // //VERIFY EMAIL ALREADY EXISTS
     const checkEmailBtn = async () => {
         if(formData.email==='') return alert('이메일을 입력해 주세요.');
+        if(!isEmail(formData.email)) return setMsg('이메일을 다시 확인해주세요.');
 
         const result = await checkEmail(formData.email);
         if(result.success){
             setIsExistsEmail(false);
+            setCheckedEmail(true);
             setMsg(result.message);
         }else{
             setIsExistsEmail(true);
+            setCheckedEmail(false);
             setMsg(result.message);
         }
         setMsgId(msgId+1);
     }
 
     const emailCheck = async () => {
-        if(formData.email==='') return alert('이메일을 입력해 주세요.');
+        if(!checkedEmail) return alert('이메일을 입력해 주세요.');
 
         const result = await sendEmailCheck(formData.email);
         if(result.success){
@@ -170,34 +175,6 @@ function SignUpPage(){
             setMsg(result.message);
         }
     }
-
-    // //SENT FORM DATA TO SERVER
-    // const saveData =async (e) => {
-    //     // e.preventDefault(); // 기본 폼 제출 방지
-    //     let vaildMsg = formVaild();
-    //     if(vaildMsg) return alert(vaildMsg);    //폼 데이터 유효성 검사
-        
-    //     try {
-    //         const response = await signUpController('/signup','post',{
-    //             memberDTO: {
-    //                 email: formData.email,
-    //                 memberPw: formData.memberPw,
-    //             },
-    //             memberInfoDTO: {
-    //                 birth: new Date(formData.birth),
-    //                 country: formData.country,
-    //                 nickname: formData.nickname,
-    //             },
-    //         });
-    //         if(response && response.data){
-    //             alert(response.data);
-    //             navigate('/',{replace:true}); // 성공 후 메인 페이지로 이동
-    //         }
-            
-    //     } catch (error) {
-    //         if(error && error.response.data){alert(error.response.data);}
-    //     }
-    // };  
 
     //SENT FORM DATA TO SERVER
     const saveData = async () => {

@@ -63,7 +63,7 @@ const StyledButton = styled.button`
     }
 `;
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
-function AddContentModal( {closeModal,isModalOpen,getContents,setMsg} ){
+function AddContentModal( {closeModal,isModalOpen,fetchContents,setMsg} ){
 
     const [title,setTitle] = useState();
     const [content,setContent] = useState();
@@ -76,7 +76,7 @@ function AddContentModal( {closeModal,isModalOpen,getContents,setMsg} ){
         const response = await saveData(title,content);
         if(response.success){
             closeModal();
-            getContents();  //Refresh
+            fetchContents();  //Refresh
         }
         if(response.message) setMsg(response.message);
     }

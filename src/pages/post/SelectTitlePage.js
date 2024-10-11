@@ -23,14 +23,8 @@ const ListContainer = styled.div`
   overflow-y: auto;
 `;
 
-const Title = styled.h1`
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 20px;
-`;
-
 const StyledLink = styled(Link)`
-  display: block;
+  display: inline-block; /* 내용에 맞춰 크기 조절 */
   background: #ffffff;
   margin: 10px 0;
   padding: 15px;
@@ -41,10 +35,12 @@ const StyledLink = styled(Link)`
   font-size: 18px;
   font-weight: 500;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  max-width: 100%; /* Prevent the box from growing too wide */
-  overflow: hidden; /* Hide text overflow */
-  text-overflow: ellipsis; /* Add ellipsis for overflow text */
-  white-space: nowrap; /* Prevent text wrapping */
+  
+  /* 너무 길어지지 않게 최대 너비 제한 */
+  max-width: 90%; /* 전체 컨테이너의 90%로 제한 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   &:hover {
     background-color: #f9f9f9;
@@ -56,6 +52,7 @@ const StyledLink = styled(Link)`
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 `;
+
 
 const AddButton = styled.button`
   margin: 20px;
@@ -106,12 +103,11 @@ function SelectTitlePage() {
     <Container>
       <Header />
       <AddButton onClick={openModal}>Add New Content</AddButton>
-      <AddContentModal closeModal={closeModal} isModalOpen={isModalOpen} getContents={getContents} setMsg={setMsg}/>
+      <AddContentModal closeModal={closeModal} isModalOpen={isModalOpen} fetchContents={fetchContents} setMsg={setMsg}/>
       <ListContainer>
-        <Title>Content List</Title>
         <ul>
           {contents.map((content) => (
-            <li key={content.contentId} style={{ width: `${Math.min(content.title.length * 10, 300)}px` }}>
+            <li key={content.contentId}>
               <StyledLink to={`/content/${content.contentId}`}>
                 {content.title}
               </StyledLink>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Words from "../component/Words";
-import { useNavigate } from "react-router-dom";
 import { cre } from "../../../hooks/api/controller/aiContentController";
 import { getAll } from "../../../hooks/api/controller/wordController";
 import styled from "styled-components";
@@ -50,26 +49,27 @@ const StyledButton = styled.button`
     }
 `;
 
-const CreContentModal = ({ closeModal,isModalOpen,setMsg }) => {
+const CreContentModal = ({ closeModal,isModalOpen,setMsg,refreshAiContent }) => {
 
     const [words,setWords] = useState([]);
     const [selList,setSelList] = useState([]);  //선택된 단어 목록
     
-    const handelSelect = (contentId, wordId, targetWord) => {
+    //contentId, wordId, targetWord
+    const handelSelect = (word) => {
         setSelList((prevSelList) => {   //prevDelList->원래의 목록
-            const currentList = prevSelList[contentId] || [];
+            const currentList = prevSelList[word.contentId] || [];
         
-            if (currentList.includes(wordId)) {
+            if (currentList.includes(word)) {
                 // wordId를 제거
                 return {
                 ...prevSelList,
-                [contentId]: currentList.filter((id) => id !== wordId),
+                [word.contentId]: currentList.filter((val) => val !== word),
                 };
             } else {
                 // wordId를 추가
                 return {
                 ...prevSelList,
-                [contentId]: [...currentList, wordId],
+                [word.contentId]: [...currentList, word],
                 };
             }
         });
@@ -82,7 +82,7 @@ const CreContentModal = ({ closeModal,isModalOpen,setMsg }) => {
             // const content = JSON.parse(result.data).result.message.content;
             setMsg(result.message);
             closeModal();
-            //새로고침
+            refreshAiContent();
         }else{
             alert(result.message)
         }
